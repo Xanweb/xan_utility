@@ -9,7 +9,7 @@ abstract class App
     private static $pkg;
 
     /**
-     * Get current package handle
+     * Get current package handle.
      *
      * @return string
      */
@@ -18,12 +18,13 @@ abstract class App
         if (empty(self::$pkgHandle)) {
             self::$pkgHandle = uncamelcase(static::getPackageAlias());
         }
+
         return self::$pkgHandle;
     }
 
     /**
-     * Get current package object
-     * 
+     * Get current package object.
+     *
      * @return \Package
      */
     public static function pkg()
@@ -33,12 +34,13 @@ abstract class App
                 ->make('Concrete\Core\Package\PackageService')
                 ->getByHandle(self::pkgHandle());
         }
+
         return self::$pkg;
     }
 
     /**
      * Gets a package specific entity manager.
-     * 
+     *
      * @return \Doctrine\ORM\EntityManager
      */
     public static function em()
@@ -47,11 +49,11 @@ abstract class App
     }
 
     /**
-     * Get Xanweb Config
+     * Get Xanweb Config.
      */
     public static function cfg($name)
     {
-        return Facade::getFacadeApplication()->make('config')->get('xanweb.'.$name);
+        return Facade::getFacadeApplication()->make('config')->get('xanweb.' . $name);
     }
 
     /**
@@ -72,8 +74,7 @@ abstract class App
     {
         $reflector = new ReflectionClass(get_called_class());
         $ns = explode('\\', $reflector->getNamespaceName());
+
         return end($ns);
     }
-    
-    
 }

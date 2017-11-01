@@ -14,7 +14,6 @@ use PageType;
 
 abstract class Installer
 {
-    
     public static function getAppClassName()
     {
         throw new Exception(t('Please Override Class and implement this method'));
@@ -29,7 +28,8 @@ abstract class Installer
     }
 
     /**
-     * install Page Template if not Exist
+     * install Page Template if not Exist.
+     *
      * @param $pTemplateHandle
      * @param $pTemplateName
      */
@@ -41,7 +41,8 @@ abstract class Installer
     }
 
     /**
-     * Install Page Type if not Exist
+     * Install Page Type if not Exist.
+     *
      * @param $pTemplateHandle
      * @param $pTypeHandle
      * @param $pTypeName
@@ -50,13 +51,13 @@ abstract class Installer
     {
         $pTPL = PageTemplate::getByHandle($pTemplateHandle);
         if (is_object($pTPL) && !PageType::getByHandle($pTypeHandle)) {
-            PageType::add(array(
+            PageType::add([
                 'handle' => $pTypeHandle,
                 'name' => $pTypeName,
                 'defaultTemplate' => $pTPL,
                 'ptIsFrequentlyAdded' => 1,
-                'ptLaunchInComposer' => 1
-            ), static::getPackage());
+                'ptLaunchInComposer' => 1,
+            ], static::getPackage());
         }
     }
 
@@ -84,7 +85,7 @@ abstract class Installer
     public static function installSinglePage($path, $name, $options = [])
     {
         $sp = Page::getByPath($path);
-        if (!is_object($sp) || $sp->getError() === COLLECTION_NOT_FOUND) {
+        if (!is_object($sp) || COLLECTION_NOT_FOUND === $sp->getError()) {
             $sp = SinglePage::add($path, static::getPackage());
             $sp->update([
                 'cName' => $name,
@@ -266,7 +267,7 @@ abstract class Installer
 
     /**
      * Intall AttributeKeys.
-     * 
+     *
      * @param \Concrete\Core\Attribute\Key\Category|string $akCateg AttributeKeyCategory object or handle
      * @param array $data array of handles and names
      */
@@ -302,14 +303,15 @@ abstract class Installer
             $app = Facade::getFacadeApplication();
             $akCateg = $app->make(CategoryService::class)->getByHandle($akCateg)->getController();
         }
-        
+
         $cak = $akCateg->getAttributeKeyByHandle($data['akHandle']);
         if (!is_object($cak)) {
             return $akCateg->add($atTypeHandle, $data, false, static::getPackage());
         }
+
         return $cak;
     }
-    
+
     /**
      * Intall PageAttributeSets.
      *
@@ -339,10 +341,10 @@ abstract class Installer
     {
         return static::installAttributeSets('file', $data);
     }
-    
+
     /**
      * Intall AttributeSets.
-     * 
+     *
      * @param \Concrete\Core\Attribute\Category\AbstractStandardCategory $akCateg AttributeKeyCategory object or handle
      * @param array $data array of handles and names
      */
@@ -357,13 +359,13 @@ abstract class Installer
             static::installAttributeSet($akCateg, $params[0], $params[1], isset($params[2]) ? $params[2] : []);
         }
     }
-    
+
     /**
-     * 
      * @param \Concrete\Core\Attribute\Category\AbstractStandardCategory $akCateg
      * @param string $handle
      * @param string $name
      * @param array $associatedAttrs
+     *
      * @return \Concrete\Core\Entity\Attribute\Set
      */
     public static function installAttributeSet($akCateg, $handle, $name, array $associatedAttrs = [])
@@ -379,7 +381,7 @@ abstract class Installer
         if (!is_object($set)) {
             $set = $manager->addSet($handle, $name, static::getPackage());
         }
-        
+
         foreach ($associatedAttrs as $akHandle) {
             $cak = $akCateg->getAttributeKeyByHandle($akHandle);
             $manager->addKey($set, $cak);

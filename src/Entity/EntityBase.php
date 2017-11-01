@@ -8,11 +8,12 @@ use Core;
 abstract class EntityBase implements \JsonSerializable
 {
     /**
-     * used for json serialisation
+     * used for json serialisation.
+     *
      * @var \stdClass
      */
     private $jsonObj;
-    
+
     /**
      * Finds an entity by its primary key / identifier.
      *
@@ -32,11 +33,12 @@ abstract class EntityBase implements \JsonSerializable
         $em = $this->persist();
         $em->flush();
     }
-    
+
     public function persist()
     {
         $em = App::em();
         $em->persist($this);
+
         return $em;
     }
 
@@ -65,7 +67,7 @@ abstract class EntityBase implements \JsonSerializable
     public function jsonSerialize()
     {
         $dh = Core::getFacadeApplication()->make('date');
-        $this->jsonObj = new \stdClass;
+        $this->jsonObj = new \stdClass();
         $array = get_object_vars($this);
         foreach ($array as $key => $v) {
             if ($v && ($v instanceof \DateTime)) {
@@ -79,7 +81,7 @@ abstract class EntityBase implements \JsonSerializable
 
         return $this->jsonObj;
     }
-    
+
     private function jsonSerializeRelatedObj($o)
     {
         if (!($v instanceof ArrayCollection) && method_exists($v, 'getID')) {
