@@ -1,0 +1,9 @@
+{
+    "name": "xanweb/utility",
+    "require": {
+        "php": "^5.6 || >=7.0 <7.3"
+    },
+    "autoload": {
+        "psr-4": { "XanUtility\\": "src/" }
+    }
+}
