@@ -16,7 +16,7 @@ abstract class Installer
 {
     public static function getAppClassName()
     {
-        throw new Exception(t('Please Override Class and implement this method'));
+        throw new \Exception('Please Override Installer Class and implement getAppClassName method');
     }
 
     /**
