@@ -65,6 +65,12 @@ abstract class Installer
      * Intall Or Update single pages.
      *
      * @param array $paths array of paths and names
+     * Example: 
+     * <pre>
+     * [
+     *  ['pagePath', 'pageName', optionalArrayofAttributeKeysAndValues],
+     * ]
+     * </pre>
      */
     public static function installSinglePages(array $paths)
     {
@@ -133,7 +139,8 @@ abstract class Installer
     /**
      * Intall Or Update BlockTypes.
      *
-     * @param array $handles array of handles and BlockTypeSet $bts
+     * @param array $handles array of handles. You can also include Blocktype sets and
+     *  use an array ['bt_handle', $btSetObj] instead of simple handle
      */
     public static function installBlockTypes(array $handles)
     {
@@ -234,10 +241,34 @@ abstract class Installer
 
         return $at;
     }
+    
+    /**
+     * Intall SiteAttributeKeys.
+     * Example of $data:
+     * <pre>
+     * [
+     *    'at_type_handle' => [ 
+     *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
+     *    ]
+     * ]
+     * </pre>
+     * @param array $data array of handles and names
+     */
+    public static function installSiteAttributeKeys(array $data)
+    {
+        return static::installAttributeKeys('site', $data);
+    }
 
     /**
      * Intall PageAttributeKeys.
-     *
+     * Example of $data:
+     * <pre>
+     * [
+     *    'at_type_handle' => [ 
+     *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
+     *    ]
+     * ]
+     * </pre>
      * @param array $data array of handles and names
      */
     public static function installPageAttributeKeys(array $data)
@@ -247,7 +278,14 @@ abstract class Installer
 
     /**
      * Intall UserAttributeKeys.
-     *
+     * Example of $data:
+     * <pre>
+     * [
+     *    'at_type_handle' => [ 
+     *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
+     *    ]
+     * ]
+     * </pre>
      * @param array $data array of handles and names
      */
     public static function installUserAttributeKeys(array $data)
@@ -257,7 +295,14 @@ abstract class Installer
 
     /**
      * Intall FileAttributeKeys.
-     *
+     * Example of $data:
+     * <pre>
+     * [
+     *    'at_type_handle' => [ 
+     *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
+     *    ]
+     * ]
+     * </pre>
      * @param array $data array of handles and names
      */
     public static function installFileAttributeKeys(array $data)
