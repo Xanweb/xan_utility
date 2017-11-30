@@ -2,7 +2,6 @@
 namespace XanUtility;
 
 use XanUtility\Asset\AssetList;
-use Concrete\Core\Support\Facade\Facade;
 
 class AssetProvider
 {
@@ -13,9 +12,8 @@ class AssetProvider
         if (self::$alreadyRegistered) {
             return;
         }
-        $app = Facade::getFacadeApplication();
-        $al = $app->make(AssetList::class); /* @var $al AssetList */
-        $al->registerMultiple([
+
+        AssetList::registerMultiple([
             'xan-utility' => [
                 ['vendor-javascript', 'js/utility.js', ['minify' => true, 'combine' => true]],
             ],
@@ -28,9 +26,12 @@ class AssetProvider
             'xan-utility/selector/file' => [
                 ['vendor-javascript', 'js/selector/file.js', ['minify' => true, 'combine' => true]],
             ],
+            'xan-utility/alert/dialog' => [
+                ['vendor-javascript', 'js/alert.dialog.js', ['minify' => true, 'combine' => true]],
+            ],
         ]);
 
-        $al->registerGroupMultiple([
+        AssetList::registerGroupMultiple([
             'xan-utility/itemlist' => [
                 [
                     ['javascript', 'jquery'],
@@ -112,6 +113,26 @@ class AssetProvider
                     ['javascript', 'core/file-manager'],
                     ['vendor-javascript', 'xan-utility'],
                     ['vendor-javascript', 'xan-utility/selector/file'],
+                ],
+            ],
+            'xan-utility/alert/dialog' => [
+                [
+                    ['css', 'core/app'],
+                    ['css', 'jquery/ui'],
+                    ['css', 'fancytree'],
+                    ['css', 'selectize'],
+                    ['javascript', 'core/events'],
+                    ['javascript', 'bootstrap/tooltip'],
+                    ['javascript', 'underscore'],
+                    ['javascript', 'backbone'],
+                    ['javascript', 'jquery/ui'],
+                    ['javascript-localized', 'jquery/ui'],
+                    ['javascript', 'fancytree'],
+                    ['javascript', 'selectize'],
+                    ['javascript-localized', 'fancytree'],
+                    ['javascript-localized', 'core/localization'],
+                    ['javascript', 'core/app'],
+                    ['vendor-javascript', 'xan-utility/alert/dialog'],
                 ],
             ],
         ]);
