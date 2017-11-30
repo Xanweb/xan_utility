@@ -117,7 +117,7 @@
     };
     
     // jQuery Plugin
-    $.fn.asbItemList = function(options) {
+    $.fn.xanItemList = function(options) {
         return $.each($(this), function(i, obj) {
             new XanItemList($(this), options);
         });
