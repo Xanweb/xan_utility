@@ -1,5 +1,4 @@
 <?php
-
 namespace XanUtility\Service\Excel;
 
 use Concrete\Core\Error\ErrorList\ErrorList;
@@ -13,8 +12,8 @@ class Import
 {
     private $objPHPExcel;
     private $error;
-    private $headers = array();
-    private $data    = array();
+    private $headers = [];
+    private $data = [];
 
     /**
      * @param File $file
@@ -23,12 +22,13 @@ class Import
     {
         $this->error = new ErrorList();
         $fv = $file->getApprovedVersion();
-        if ($fv->getExtension() == 'xls' || $fv->getExtension() == 'xlsx') {
-            $this->objPHPExcel = PHPExcel_IOFactory::load(DIR_BASE.$fv->getRelativePath());
+        if ('xls' == $fv->getExtension() || 'xlsx' == $fv->getExtension()) {
+            $this->objPHPExcel = PHPExcel_IOFactory::load(DIR_BASE . $fv->getRelativePath());
             $this->extractData();
         } else {
             $this->error->add(t('Invalid Excel File'));
         }
+
         return $this->error;
     }
 
@@ -36,17 +36,17 @@ class Import
     {
         $this->extractHeaders();
         foreach ($this->objPHPExcel->getAllSheets() as $sheetIdx => $sheet /* @var $sheet PHPExcel_Worksheet */) {
-            $header    = $this->headers[$sheetIdx];
-            $sheetData = array();
+            $header = $this->headers[$sheetIdx];
+            $sheetData = [];
             if ($sheet->cellExists('A2')) {
                 foreach ($sheet->getRowIterator(2) as $row) {
-                    $rowData = array();
+                    $rowData = [];
                     foreach ($row->getCellIterator() as $index => $cell) {
                         $rowData[$header[$index]] = $this->extractCellValue($cell);
                     }
                     $sheetData[] = $rowData;
                 }
-                $this->data[] = array("name" => $sheet->getTitle(), 'data' => $sheetData);
+                $this->data[] = ["name" => $sheet->getTitle(), 'data' => $sheetData];
             }
         }
     }
@@ -54,10 +54,10 @@ class Import
     private function extractHeaders()
     {
         foreach ($this->objPHPExcel->getAllSheets() as $sheet) {
-            $columns = array();
+            $columns = [];
             foreach ($sheet->getRowIterator() as $row) {
                 foreach ($row->getCellIterator() as $index => $cell) {
-                    $colName         = trim($cell->getValue());
+                    $colName = trim($cell->getValue());
                     $columns[$index] = $colName;
                 }
                 break;
@@ -76,8 +76,8 @@ class Import
     }
 
     /**
-     * 
      * @param int $tabIndex
+     *
      * @return array
      */
     public function getTabHeader($tabIndex)
@@ -92,8 +92,10 @@ class Import
      *    &nbsp;               'rowIndex' => [ 'columnHeaderName' => 'cellValue', ...],  <br/>
      *    &nbsp;               ...    <br/>
      *    &nbsp;           ]  <br/>
-     *  ] <br/>
+     *  ] <br/>.
+     *
      * @param int $tabIndex
+     *
      * @return array
      */
     public function getTabData($tabIndex)

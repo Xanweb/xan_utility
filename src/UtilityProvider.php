@@ -15,14 +15,13 @@ class UtilityProvider extends ServiceProvider
     {
         $register = [
             'excel/export' => Service\Excel\Export::class,
-            'excel/import' => Service\Excel\Import::class
+            'excel/import' => Service\Excel\Import::class,
         ];
         foreach ($register as $key => $value) {
             $this->app->bindIf($key, $value);
         }
 
         $singletons = [
-            
         ];
         foreach ($singletons as $key => $value) {
             $this->app->bindIf($key, $value, true);

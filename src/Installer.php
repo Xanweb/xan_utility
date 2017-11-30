@@ -14,18 +14,16 @@ use PageType;
 
 class Installer
 {
-    
     /**
      * @param \Package $pkg
      */
     private $pkg;
-    
-    
+
     public function __construct($pkg)
     {
         $this->pkg = $pkg;
     }
-    
+
     /**
      * @return \Package
      */
@@ -72,7 +70,7 @@ class Installer
      * Intall Or Update single pages.
      *
      * @param array $paths array of paths and names
-     * Example: 
+     * Example:
      * <pre>
      * [
      *  ['pagePath', 'pageName', optionalArrayofAttributeKeysAndValues],
@@ -248,17 +246,18 @@ class Installer
 
         return $at;
     }
-    
+
     /**
      * Intall SiteAttributeKeys.
      * Example of $data:
      * <pre>
      * [
-     *    'at_type_handle' => [ 
+     *    'at_type_handle' => [
      *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
      *    ]
      * ]
-     * </pre>
+     * </pre>.
+     *
      * @param array $data array of handles and names
      */
     public function installSiteAttributeKeys(array $data)
@@ -271,11 +270,12 @@ class Installer
      * Example of $data:
      * <pre>
      * [
-     *    'at_type_handle' => [ 
+     *    'at_type_handle' => [
      *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
      *    ]
      * ]
-     * </pre>
+     * </pre>.
+     *
      * @param array $data array of handles and names
      */
     public function installPageAttributeKeys(array $data)
@@ -288,11 +288,12 @@ class Installer
      * Example of $data:
      * <pre>
      * [
-     *    'at_type_handle' => [ 
+     *    'at_type_handle' => [
      *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
      *    ]
      * ]
-     * </pre>
+     * </pre>.
+     *
      * @param array $data array of handles and names
      */
     public function installUserAttributeKeys(array $data)
@@ -305,11 +306,12 @@ class Installer
      * Example of $data:
      * <pre>
      * [
-     *    'at_type_handle' => [ 
+     *    'at_type_handle' => [
      *       ['akHandle' => 'ak_handle', 'akName' => 'AttributeKey Name']
      *    ]
      * ]
-     * </pre>
+     * </pre>.
+     *
      * @param array $data array of handles and names
      */
     public function installFileAttributeKeys(array $data)
