@@ -115,5 +115,6 @@ class AssetProvider
                 ],
             ],
         ]);
+        self::$alreadyRegistered = true;
     }
 }
