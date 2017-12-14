@@ -14,7 +14,7 @@ class Parser
      */
     public static function parse($version)
     {
-        $info = array();
+        $info = [];
         $size = getimagesize(DIR_BASE . $version->getRelativePath(), $info);
 
         if (false == $size || !isset($info['APP13'])) {
