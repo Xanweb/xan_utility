@@ -1,7 +1,5 @@
 <?php
 
-
-
 class Area extends \Concrete\Core\Area\Area{}
 abstract class Asset extends \Concrete\Core\Asset\Asset{}
 class AssetList extends \Concrete\Core\Asset\AssetList{}

@@ -6,6 +6,7 @@
         "phpoffice/phpexcel": "1.8.*"
     },
     "autoload": {
-        "psr-4": { "XanUtility\\": "src/" }
+        "psr-4": { "XanUtility\\": "src/" },
+        "files": [ "bootstrap/helpers.php" ]
     }
 }
