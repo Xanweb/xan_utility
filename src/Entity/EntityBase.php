@@ -73,7 +73,7 @@ abstract class EntityBase implements \JsonSerializable
             if ($v && ($v instanceof \DateTime)) {
                 $this->jsonObj->{$key} = $dh->formatCustom('d.m.Y', $v);
             } elseif (is_object($v)) {
-                $this->jsonSerializeRelatedObj($v);
+                $this->jsonSerializeRelatedObj($key, $v);
             } else {
                 $this->jsonObj->{$key} = $v;
             }
@@ -82,10 +82,10 @@ abstract class EntityBase implements \JsonSerializable
         return $this->jsonObj;
     }
 
-    private function jsonSerializeRelatedObj($o)
+    private function jsonSerializeRelatedObj($key, $o)
     {
-        if (!($v instanceof ArrayCollection) && method_exists($v, 'getID')) {
-            $this->jsonObj->{$key . 'ID'} = $v->getID();
+        if (!($o instanceof ArrayCollection) && method_exists($o, 'getID')) {
+            $this->jsonObj->{$key . 'ID'} = $o->getID();
         }
     }
 }

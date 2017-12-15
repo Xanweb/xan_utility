@@ -5,7 +5,7 @@ use Concrete\Core\Asset\AssetList as CoreAssetList;
 
 class AssetList
 {
-    public static function register($assetType, $assetHandle, $filename, $args = [])
+    public static function register($assetType, $assetHandle, $filename, $args = [], $pkg = false)
     {
         $al = CoreAssetList::getInstance();
         $class = '\\XanUtility\\Asset\\' . Object::camelcase($assetType) . 'Asset';
@@ -32,18 +32,18 @@ class AssetList
 
     public static function registerMultiple(array $assets)
     {
-        foreach ($assets as $asset_handle => $asset_types) {
-            foreach ($asset_types as $asset_type => $asset_settings) {
-                array_splice($asset_settings, 1, 0, $asset_handle);
-                call_user_func_array([self::class, 'register'], $asset_settings);
+        foreach ($assets as $handle => $types) {
+            foreach ($types as $settings) {
+                array_splice($settings, 1, 0, $handle);
+                call_user_func_array([self::class, 'register'], $settings);
             }
         }
     }
 
-    public static function registerGroupMultiple(array $asset_groups)
+    public static function registerGroupMultiple(array $assetGroups)
     {
         $al = CoreAssetList::getInstance();
 
-        return $al->registerGroupMultiple($asset_groups);
+        return $al->registerGroupMultiple($assetGroups);
     }
 }
