@@ -72,7 +72,7 @@ abstract class App
 
     protected static function getPackageAlias()
     {
-        $reflector = new ReflectionClass(get_called_class());
+        $reflector = new \ReflectionClass(get_called_class());
         $ns = explode('\\', $reflector->getNamespaceName());
 
         return end($ns);
