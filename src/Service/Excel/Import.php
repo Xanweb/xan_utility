@@ -1,12 +1,11 @@
 <?php
 namespace XanUtility\Service\Excel;
 
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Concrete\Core\Error\ErrorList\ErrorList;
 use Concrete\Core\File\File;
-use PHPExcel_Cell;
-use PHPExcel_IOFactory;
-use PHPExcel_Shared_Date;
-use PHPExcel_Worksheet;
 
 class Import
 {
@@ -16,14 +15,16 @@ class Import
     private $data = [];
 
     /**
+     * Import constructor.
      * @param File $file
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public function __construct($file)
     {
         $this->error = new ErrorList();
         $fv = $file->getApprovedVersion();
         if ('xls' == $fv->getExtension() || 'xlsx' == $fv->getExtension()) {
-            $this->objPHPExcel = PHPExcel_IOFactory::load(DIR_BASE . $fv->getRelativePath());
+            $this->objPHPExcel = IOFactory::load(absolute_path($fv->getRelativePath()));
             $this->extractData();
         } else {
             $this->error->add(t('Invalid Excel File'));
@@ -35,7 +36,7 @@ class Import
     private function extractData()
     {
         $this->extractHeaders();
-        foreach ($this->objPHPExcel->getAllSheets() as $sheetIdx => $sheet /* @var $sheet PHPExcel_Worksheet */) {
+        foreach ($this->objPHPExcel->getAllSheets() as $sheetIdx => $sheet) {
             $header = $this->headers[$sheetIdx];
             $sheetData = [];
             if ($sheet->cellExists('A2')) {
@@ -66,10 +67,10 @@ class Import
         }
     }
 
-    private function extractCellValue(PHPExcel_Cell $cell)
+    private function extractCellValue(Cell $cell)
     {
-        if (PHPExcel_Shared_Date::isDateTime($cell)) {
-            return PHPExcel_Shared_Date::ExcelToPHPObject($cell->getValue());
+        if (Date::isDateTime($cell)) {
+            return Date::excelToDateTimeObject($cell->getValue());
         } else {
             return trim($cell->getValue());
         }

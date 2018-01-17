@@ -2,18 +2,18 @@
 namespace XanUtility\Service\Excel;
 
 use Concrete\Core\Application\Application;
-use PHPExcel_Style_Border;
-use PHPExcel_Helper_HTML;
-use PHPExcel_Style_Fill;
-use PHPExcel_IOFactory;
-use PHPExcel_Style;
-use PHPExcel_Cell;
-use PHPExcel;
+use PhpOffice\PhpSpreadsheet\Helper\Html;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Style;
 use User;
 
 class Export
 {
-    /** @var PHPExcel */
+    /** @var Spreadsheet */
     private $phpExcel = null;
 
     private $tabid = 0; //id of tabulation index on excel file
@@ -26,7 +26,7 @@ class Export
 
     public function __construct(Application $app)
     {
-        $this->phpExcel = new PHPExcel();
+        $this->phpExcel = new Spreadsheet();
         $this->app = $app;
     }
 
@@ -53,8 +53,9 @@ class Export
 
     /**
      * Download Excel File.
-     *
-     * @param string $fileName
+     * @param $fileName
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function download($fileName)
     {
@@ -81,16 +82,16 @@ class Export
         header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
         header('Cache-control: private');
         header('Pragma: public'); // HTTP/1.0
-        $objWriter = PHPExcel_IOFactory::createWriter($this->phpExcel, 'Excel2007');
+        $objWriter = IOFactory::createWriter($this->phpExcel, 'Xlsx');
         $objWriter->save('php://output');
         $this->app->shutdown();
     }
 
     /**
      * Save The Excel file under the given directory.
-     *
-     * @param string $fileName
-     * @param string $dirPath
+     * @param $fileName
+     * @param $dirPath
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function saveAs($fileName, $dirPath)
     {
@@ -104,19 +105,20 @@ class Export
             $dirPath .= '/';
         }
 
-        $objWriter = PHPExcel_IOFactory::createWriter($this->phpExcel, 'Excel2007');
+        $objWriter = IOFactory::createWriter($this->phpExcel, 'Xlsx');
         $objWriter->save($dirPath . $fileName);
     }
 
     /**
+     * Insert Content in Excel Worksheet
      * @param string $tabName tabulationName
      * @param array $headers columns names
      * @param array $data rows
      * @param bool $createNewTab boolean indicate that we like to create New tab
      *
-     * @throws \PHPExcel_Exception
-     *
-     * @return array(PHPExcel_Worksheet, int)
+     * @return array(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet, int)
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Style\Exception
      */
     public function addTabContent($tabName = '', array $headers = [], array $data = [], $createNewTab = false)
     {
@@ -136,25 +138,25 @@ class Export
         if (!empty($headers)) {
             foreach ($headers as $i => $value) {
                 $activeSheet->setCellValueByColumnAndRow($i, $rowCount, $value);
-                //attribute width dynamique to columns
+                //attribute width dynamic to columns
                 for ($i = 0; $i < sizeof($headers); ++$i) {
-                    $activeSheet->getColumnDimension(PHPExcel_Cell::stringFromColumnIndex($i))->setAutoSize(true);
+                    $activeSheet->getColumnDimension(Coordinate::stringFromColumnIndex($i))->setAutoSize(true);
                 }
             }
 
-            $headerStyle = new PHPExcel_Style();
+            $headerStyle = new Style();
             $headerStyle->applyFromArray([
                 'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-                'fill' => ['type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => '428BCA']],
+                'fill' => ['type' => Fill::FILL_SOLID, 'color' => ['rgb' => '428BCA']],
                 'borders' => [
-                    'bottom' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
-                    'top' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
-                    'right' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
-                    'left' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
+                    'bottom' => ['style' => Border::BORDER_THIN],
+                    'top' => ['style' => Border::BORDER_THIN],
+                    'right' => ['style' => Border::BORDER_THIN],
+                    'left' => ['style' => Border::BORDER_THIN],
                 ],
             ]);
 
-            $indexLastCell = PHPExcel_Cell::stringFromColumnIndex(sizeof($headers) - 1);
+            $indexLastCell = Coordinate::stringFromColumnIndex(sizeof($headers) - 1);
             $activeSheet->duplicateStyle($headerStyle, "A{$rowCount}:{$indexLastCell}{$rowCount}");
 
             ++$rowCount;
@@ -165,7 +167,7 @@ class Export
             foreach ($row as $i => $value) {
                 // Check if value contains Html tags
                 if ($value != strip_tags($value)) {
-                    $hh = new PHPExcel_Helper_HTML();
+                    $hh = new Html();
                     $value = $hh->toRichTextObject($value);
                 }
                 $activeSheet->setCellValueByColumnAndRow($i, $rowCount, $value);
@@ -173,18 +175,18 @@ class Export
             ++$rowCount;
         }
 
-        $contentStyle = new PHPExcel_Style();
+        $contentStyle = new Style();
         $contentStyle->applyFromArray([
             'borders' => [
-                'bottom' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
-                'top' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
-                'right' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
-                'left' => ['style' => PHPExcel_Style_Border::BORDER_THIN],
+                'bottom' => ['style' => Border::BORDER_THIN],
+                'top' => ['style' => Border::BORDER_THIN],
+                'right' => ['style' => Border::BORDER_THIN],
+                'left' => ['style' => Border::BORDER_THIN],
             ],
         ]);
         $contentStyle->getAlignment()->setWrapText(true);
 
-        $indexLastCell = PHPExcel_Cell::stringFromColumnIndex($i);
+        $indexLastCell = Coordinate::stringFromColumnIndex($i);
         $lastRowIndex = $rowCount - 1;
         $activeSheet->duplicateStyle($contentStyle, "A{$contentStartRow}:{$indexLastCell}{$lastRowIndex}");
 
@@ -192,7 +194,7 @@ class Export
     }
 
     /**
-     * @return PHPExcel
+     * @return Spreadsheet
      */
     public function getPHPExcelObject()
     {

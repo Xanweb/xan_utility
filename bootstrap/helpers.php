@@ -282,3 +282,37 @@ if (!function_exists('remove_accents')) {
         return $string;
     }
 }
+
+if (!function_exists('absolute_path')) {
+    /**
+     * Get absolute path from relative.
+     *
+     * @param  string $relPath  relative path
+     *
+     * @return string
+     */
+    function absolute_path($relPath)
+    {
+        if (is_absolute_path($relPath)) {
+            return $relPath;
+        }
+        if (!starts_with($relPath, ['/', '\\'])) {
+            $relPath = DIRECTORY_SEPARATOR . $relPath;
+        }
+        return DIR_BASE . $relPath;
+    }
+}
+
+if (!function_exists('is_absolute_path')) {
+    /**
+     * Check if path is absolute.
+     *
+     * @param  string $path
+     *
+     * @return string
+     */
+    function is_absolute_path($path)
+    {
+        return strpos($path, DIR_BASE) !== false;
+    }
+}
