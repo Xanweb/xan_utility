@@ -129,8 +129,10 @@ class Export
 
         $this->phpExcel->setActiveSheetIndex($this->tabid);
         $activeSheet = $this->phpExcel->getActiveSheet();
-        // Maximum 31 characters allowed in sheet title
-        $activeSheet->setTitle(substr($tabName, 0, 30), false);
+        $tabName = str_replace(['*', ':', '?', '[', ']'], '', $tabName); // Remove invalid Chars
+        $tabName = str_replace(['\\', '/'], '-', $tabName);
+        $tabName = substr($tabName, 0, 30);// Maximum 31 characters allowed in sheet title
+        $activeSheet->setTitle($tabName, false);
 
         $rowCount = $this->startRow;
         $contentStartRow = $this->startRow;
