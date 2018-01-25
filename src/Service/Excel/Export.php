@@ -8,7 +8,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-use PhpOffice\PhpSpreadsheet\Style\Style;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use User;
 
 class Export
@@ -139,27 +139,16 @@ class Export
 
         if (!empty($headers)) {
             foreach ($headers as $i => $value) {
-                $activeSheet->setCellValueByColumnAndRow($i, $rowCount, $value);
-                //attribute width dynamic to columns
-                for ($i = 0; $i < sizeof($headers); ++$i) {
-                    $activeSheet->getColumnDimension(Coordinate::stringFromColumnIndex($i))->setAutoSize(true);
-                }
+                $colIdx = $i + 1;
+                $activeSheet->setCellValueByColumnAndRow($colIdx, $rowCount, $value);
+                $activeSheet->getColumnDimension(Coordinate::stringFromColumnIndex($colIdx))->setAutoSize(true);
             }
 
-            $headerStyle = new Style();
-            $headerStyle->applyFromArray([
-                'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-                'fill' => ['type' => Fill::FILL_SOLID, 'color' => ['rgb' => '428BCA']],
-                'borders' => [
-                    'bottom' => ['style' => Border::BORDER_THIN],
-                    'top' => ['style' => Border::BORDER_THIN],
-                    'right' => ['style' => Border::BORDER_THIN],
-                    'left' => ['style' => Border::BORDER_THIN],
-                ],
-            ]);
-
-            $indexLastCell = Coordinate::stringFromColumnIndex(sizeof($headers) - 1);
-            $activeSheet->duplicateStyle($headerStyle, "A{$rowCount}:{$indexLastCell}{$rowCount}");
+            $indexLastCell = Coordinate::stringFromColumnIndex(sizeof($headers));
+            $headerStyle = $activeSheet->getStyle("A{$rowCount}:{$indexLastCell}{$rowCount}");
+            $headerStyle->getFont()->setBold(true)->setColor(new Color(Color::COLOR_WHITE));
+            $headerStyle->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setRGB('428BCA');
+            $headerStyle->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
 
             ++$rowCount;
             ++$contentStartRow;
@@ -167,31 +156,23 @@ class Export
 
         foreach ($data as $row) {
             foreach ($row as $i => $value) {
+                $colIdx = $i + 1;
                 // Check if value contains Html tags
                 if ($value != strip_tags($value)) {
                     $hh = new Html();
                     $value = $hh->toRichTextObject($value);
                 }
-                $activeSheet->setCellValueByColumnAndRow($i, $rowCount, $value);
+                $activeSheet->setCellValueByColumnAndRow($colIdx, $rowCount, $value);
             }
             ++$rowCount;
         }
-
-        $contentStyle = new Style();
-        $contentStyle->applyFromArray([
-            'borders' => [
-                'bottom' => ['style' => Border::BORDER_THIN],
-                'top' => ['style' => Border::BORDER_THIN],
-                'right' => ['style' => Border::BORDER_THIN],
-                'left' => ['style' => Border::BORDER_THIN],
-            ],
-        ]);
-        $contentStyle->getAlignment()->setWrapText(true);
-
-        $indexLastCell = Coordinate::stringFromColumnIndex($i);
+        
         $lastRowIndex = $rowCount - 1;
-        $activeSheet->duplicateStyle($contentStyle, "A{$contentStartRow}:{$indexLastCell}{$lastRowIndex}");
-
+        $indexLastCell = Coordinate::stringFromColumnIndex($colIdx);
+        $contentStyle = $activeSheet->getStyle("A{$contentStartRow}:{$indexLastCell}{$lastRowIndex}");
+        $contentStyle->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+        $contentStyle->getAlignment()->setWrapText(true);
+        
         return [$activeSheet, $rowCount];
     }
 
