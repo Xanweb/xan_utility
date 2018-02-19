@@ -15,8 +15,10 @@ abstract class App
      */
     public static function pkgHandle()
     {
-        if (empty(self::$pkgHandle)) {
-            self::$pkgHandle = uncamelcase(static::getPackageAlias());
+        if (!self::$pkgHandle) {
+            $class = new \ReflectionClass(get_called_class());
+            $path = str_replace(DIR_PACKAGES . '/', '', str_replace(DIRECTORY_SEPARATOR, '/', $class->getFilename()));
+            self::$pkgHandle = reset(explode('/', $path));
         }
 
         return self::$pkgHandle;
@@ -49,11 +51,20 @@ abstract class App
     }
 
     /**
-     * Get Xanweb Config.
+     * Get Xanweb File Config.
      */
     public static function cfg($name)
     {
         return Facade::getFacadeApplication()->make('config')->get('xanweb.' . $name);
+    }
+    
+    /**
+     * Get Package Database Config
+     * @return \Concrete\Core\Config\Repository\Liaison
+     */
+    public static function config()
+    {
+        return self::pkg()->getConfig();
     }
 
     /**
@@ -72,9 +83,6 @@ abstract class App
 
     protected static function getPackageAlias()
     {
-        $reflector = new \ReflectionClass(get_called_class());
-        $ns = explode('\\', $reflector->getNamespaceName());
-
-        return end($ns);
+        return camelcase(static::pkgHandle());
     }
 }
