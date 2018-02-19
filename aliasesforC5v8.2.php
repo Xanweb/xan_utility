@@ -65,7 +65,6 @@ class SinglePage extends \Concrete\Core\Page\Single{}
 class Stack extends \Concrete\Core\Page\Stack\Stack{}
 class StackList extends \Concrete\Core\Page\Stack\StackList{}
 class StartingPointPackage extends \Concrete\Core\Package\StartingPointPackage{}
-class TaskPermission extends \Concrete\Core\Legacy\TaskPermission{}
 class User extends \Concrete\Core\User\User{}
 class UserAttributeKey extends \Concrete\Core\Attribute\Key\UserKey{}
 class UserList extends \Concrete\Core\User\UserList{}
