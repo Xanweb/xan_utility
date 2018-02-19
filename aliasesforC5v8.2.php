@@ -29,7 +29,6 @@ class File extends \Concrete\Core\File\File{}
 class FileAttributeKey extends \Concrete\Core\Attribute\Key\FileKey{}
 class FileImporter extends \Concrete\Core\File\Importer{}
 class FileList extends \Concrete\Core\File\FileList{}
-class FilePermissions extends \Concrete\Core\Legacy\FilePermissions{}
 class FileSet extends \Concrete\Core\File\Set\Set{}
 class GlobalArea extends \Concrete\Core\Area\GlobalArea{}
 class Group extends \Concrete\Core\User\Group\Group{}
