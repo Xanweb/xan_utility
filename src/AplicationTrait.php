@@ -2,9 +2,15 @@
 namespace XanUtility;
 
 use Concrete\Core\Application\Application;
+use Concrete\Core\Support\Facade\Facade;
 
 trait ApplicationTrait
 {
+    /**
+     * @var Application
+     */
+    protected $app;
+
     /**
      * @param string $make [optional]
      *
