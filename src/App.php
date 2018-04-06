@@ -9,6 +9,11 @@ abstract class App
     private static $pkg;
 
     /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private static $em;
+
+    /**
      * Get current package handle.
      *
      * @return string
@@ -42,12 +47,16 @@ abstract class App
 
     /**
      * Gets a package specific entity manager.
+     * @param bool $reset
      *
      * @return \Doctrine\ORM\EntityManager
      */
-    public static function em()
+    public static function em($reset = false)
     {
-        return Facade::getFacadeApplication()->make('database/orm')->entityManager();
+        if(!self::$em || $reset) {
+            self::$em = Facade::getFacadeApplication()->make('database/orm')->entityManager();
+        }
+        return self::$em;
     }
 
     /**
