@@ -1,35 +1,35 @@
 <?php
-namespace XanUtility;
+namespace XanUtility\Application;
 
-use Concrete\Core\Attribute\Category\CategoryService;
-use Concrete\Core\Attribute\TypeFactory;
-use Concrete\Core\Block\BlockType\BlockType;
-use Concrete\Core\Block\BlockType\Set as BlockTypeSet;
 use Concrete\Core\Attribute\SetFactory;
-use Concrete\Core\Page\Page;
+use Concrete\Core\Attribute\TypeFactory;
+use Concrete\Core\Attribute\Category\CategoryService;
+use Concrete\Core\Block\BlockType\Set as BlockTypeSet;
+use Concrete\Core\Block\BlockType\BlockType;
 use Concrete\Core\Page\Single as SinglePage;
-use Concrete\Core\Support\Facade\Facade;
+use Concrete\Core\Page\Page;
+use Concrete\Core\Package\Package;
+use Concrete\Core\Entity\Package as PackageEntity;
 use PageTemplate;
 use PageType;
 
 class Installer
 {
     /**
-     * @param \Package $pkg
+     * @param PackageEntity $pkg
      */
-    private $pkg;
+    protected $pkg;
 
-    public function __construct($pkg)
-    {
-        $this->pkg = $pkg;
-    }
+    use ApplicationTrait;
 
     /**
-     * @return \Package
+     * Installer constructor.
+     *
+     * @param Package|PackageEntity $pkg
      */
-    private function getPackage()
+    public function __construct($pkg)
     {
-        return $this->pkg;
+        $this->pkg = ($pkg instanceof Package) ? $pkg->getPackageEntity() : $pkg;
     }
 
     /**
@@ -37,11 +37,12 @@ class Installer
      *
      * @param $pTemplateHandle
      * @param $pTemplateName
+     * @param $pTemplateIcon
      */
-    public function installPageTemplate($pTemplateHandle, $pTemplateName)
+    public function installPageTemplate($pTemplateHandle, $pTemplateName, $pTemplateIcon = FILENAME_PAGE_TEMPLATE_DEFAULT_ICON)
     {
         if (!PageTemplate::getByHandle($pTemplateHandle)) {
-            PageTemplate::add($pTemplateHandle, $pTemplateName, 'blank.png', $this->getPackage());
+            PageTemplate::add($pTemplateHandle, $pTemplateName, $pTemplateIcon, $this->pkg);
         }
     }
 
@@ -62,12 +63,12 @@ class Installer
                 'defaultTemplate' => $pTPL,
                 'ptIsFrequentlyAdded' => 1,
                 'ptLaunchInComposer' => 1,
-            ], $this->getPackage());
+            ], $this->pkg);
         }
     }
 
     /**
-     * Intall Or Update single pages.
+     * Install Or Update single pages.
      *
      * @param array $paths array of paths and names
      * Example:
@@ -85,7 +86,7 @@ class Installer
     }
 
     /**
-     * Intall Or Update Single Page if Exists.
+     * Install Or Update Single Page if Exists.
      *
      * @param string $path
      * @param string $name
@@ -97,7 +98,7 @@ class Installer
     {
         $sp = Page::getByPath($path);
         if (!is_object($sp) || COLLECTION_NOT_FOUND === $sp->getError()) {
-            $sp = SinglePage::add($path, $this->getPackage());
+            $sp = SinglePage::add($path, $this->pkg);
             $sp->update([
                 'cName' => $name,
             ]);
@@ -111,7 +112,7 @@ class Installer
     }
 
     /**
-     * Intall Or Update BlockTypeSets.
+     * Install Or Update BlockTypeSets.
      *
      * @param array $handles array of handles and names
      */
@@ -123,7 +124,7 @@ class Installer
     }
 
     /**
-     * Intall Or Update BlockTypeSet if Exists.
+     * Install Or Update BlockTypeSet if Exists.
      *
      * @param string $handle
      * @param string $name
@@ -135,7 +136,7 @@ class Installer
         $bts = BlockTypeSet::getByHandle($handle);
 
         if (!is_object($bts)) {
-            $bts = BlockTypeSet::add($handle, $name, $this->getPackage());
+            $bts = BlockTypeSet::add($handle, $name, $this->pkg);
         }
 
         return $bts;
@@ -161,19 +162,19 @@ class Installer
     }
 
     /**
-     * Intall Or Update BlockType if Exists.
+     * Install Or Update BlockType if Exists.
      *
      * @param string $handle
      * @param BlockTypeSet $bts
      *
-     * @return BlockType return installed BlockType
+     * @return \Concrete\Core\Entity\Block\BlockType\BlockType return installed BlockType
      */
     public function installBlockType($handle, BlockTypeSet $bts = null)
     {
         $bt = BlockType::getByHandle($handle);
 
         if (!is_object($bt)) {
-            $bt = BlockType::installBlockType($handle, $this->getPackage());
+            $bt = BlockType::installBlockType($handle, $this->pkg);
         }
 
         if (is_object($bts)) {
@@ -184,24 +185,25 @@ class Installer
     }
 
     /**
-     * Intall Or Update AttributeKeyCategory.
+     * Install Or Update AttributeKeyCategory.
      *
      * @param string $handle The handle string for the category
      * @param int $allowSets This should be an attribute AttributeKeyCategory::ASET_ALLOW_* constant
      * @param array $associatedAttrTypes array of attribute type handles to be associated with
      *
-     * @return Concrete\Core\Entity\Attribute\Category
+     * @return \Concrete\Core\Attribute\Category\CategoryInterface
      */
     public function installAttributeKeyCategory($handle, $allowSets = 0, array $associatedAttrTypes = [])
     {
-        $app = Facade::getFacadeApplication();
-        $akCategSvc = $app->make(CategoryService::class);
+        $akCategSvc = $this->app()->make(CategoryService::class);
         $akCateg = $akCategSvc->getByHandle($handle);
         if (!is_object($akCateg)) {
-            $akCateg = $akCategSvc->add($handle, $allowSets, $this->getPackage());
+            $akCateg = $akCategSvc->add($handle, $allowSets, $this->pkg);
+        } else {
+            $akCateg = $akCateg->getController();
         }
 
-        $atFactory = $app->make(TypeFactory::class);
+        $atFactory = $this->app()->make(TypeFactory::class);
         foreach ($associatedAttrTypes as $atHandle) {
             $akCateg->associateAttributeKeyType($atFactory->getByHandle($atHandle));
         }
@@ -210,7 +212,7 @@ class Installer
     }
 
     /**
-     * Intall Or Update AttributeTypes.
+     * Install Or Update AttributeTypes.
      *
      * @param array $handles array of handles and names
      */
@@ -222,7 +224,7 @@ class Installer
     }
 
     /**
-     * Intall Or Update AttributeType if Exists.
+     * Install Or Update AttributeType if Exists.
      *
      * @param string $handle
      * @param string $name
@@ -232,12 +234,11 @@ class Installer
      */
     public function installAttributeType($handle, $name, $akc = null)
     {
-        $app = Facade::getFacadeApplication();
-        $atFactory = $app->make(TypeFactory::class);
+        $atFactory = $this->app()->make(TypeFactory::class);
 
         $at = $atFactory->getByHandle($handle);
         if (!is_object($at)) {
-            $at = $atFactory->add($handle, $name, $this->getPackage());
+            $at = $atFactory->add($handle, $name, $this->pkg);
         }
 
         if (is_object($akc)) {
@@ -248,7 +249,7 @@ class Installer
     }
 
     /**
-     * Intall SiteAttributeKeys.
+     * Install SiteAttributeKeys.
      * Example of $data:
      * <pre>
      * [
@@ -259,6 +260,8 @@ class Installer
      * </pre>.
      *
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Key\Key[] return installed AttrKeys
      */
     public function installSiteAttributeKeys(array $data)
     {
@@ -266,7 +269,7 @@ class Installer
     }
 
     /**
-     * Intall PageAttributeKeys.
+     * Install PageAttributeKeys.
      * Example of $data:
      * <pre>
      * [
@@ -277,6 +280,8 @@ class Installer
      * </pre>.
      *
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Key\Key[] return installed AttrKeys
      */
     public function installPageAttributeKeys(array $data)
     {
@@ -284,7 +289,7 @@ class Installer
     }
 
     /**
-     * Intall UserAttributeKeys.
+     * Install UserAttributeKeys.
      * Example of $data:
      * <pre>
      * [
@@ -295,6 +300,8 @@ class Installer
      * </pre>.
      *
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Key\Key[] return installed AttrKeys
      */
     public function installUserAttributeKeys(array $data)
     {
@@ -302,7 +309,7 @@ class Installer
     }
 
     /**
-     * Intall FileAttributeKeys.
+     * Install FileAttributeKeys.
      * Example of $data:
      * <pre>
      * [
@@ -313,6 +320,8 @@ class Installer
      * </pre>.
      *
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Key\Key[] return installed AttrKeys
      */
     public function installFileAttributeKeys(array $data)
     {
@@ -320,56 +329,77 @@ class Installer
     }
 
     /**
-     * Intall AttributeKeys.
+     * Install AttributeKeys.
      *
-     * @param \Concrete\Core\Attribute\Key\Category|string $akCateg AttributeKeyCategory object or handle
+     * @param \Concrete\Core\Entity\Attribute\Category|string $akCateg AttributeKeyCategory object or handle
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Key\Key[] return installed AttrKeys
      */
     public function installAttributeKeys($akCateg, array $data)
     {
-        $app = Facade::getFacadeApplication();
-        $atFactory = $app->make(TypeFactory::class);
+        $atFactory = $this->app()->make(TypeFactory::class);
 
         if (is_string($akCateg)) {
-            $akCateg = $app->make(CategoryService::class)->getByHandle($akCateg)->getController();
+            $akCateg = $this->app()->make(CategoryService::class)->getByHandle($akCateg);
         }
 
+        $installedAks = [];
         foreach ($data as $atHandle => $attrs) {
             $at = $atFactory->getByHandle($atHandle);
             foreach ($attrs as $params) {
-                $this->installAttributeKey($akCateg, $at, $params);
+                $ak = $this->installAttributeKey($akCateg, $at, $params);
+                if (is_object($ak)) {
+                    $installedAks[$ak->getAttributeKeyHandle()] = $ak;
+                }
             }
         }
+
+        return $installedAks;
     }
 
     /**
-     * Intall CollectionAttributeKey if not Exists.
+     * Install AttributeKey if not Exists.
      *
-     * @param \Concrete\Core\Attribute\Category\AbstractStandardCategory $akCateg AttributeKeyCategory object or handle
+     * @param \Concrete\Core\Entity\Attribute\Category|string $akCateg AttributeKeyCategory object or handle
      * @param string $atTypeHandle
      * @param array $data
      *
-     * @return CollectionAttributeKey; return installed attribute key
+     * @return \Concrete\Core\Entity\Attribute\Key\Key return installed attribute key
      */
     public function installAttributeKey($akCateg, $atTypeHandle, $data)
     {
         if (is_string($akCateg)) {
-            $app = Facade::getFacadeApplication();
-            $akCateg = $app->make(CategoryService::class)->getByHandle($akCateg)->getController();
+            $akCateg = $this->app()->make(CategoryService::class)->getByHandle($akCateg);
         }
 
-        $cak = $akCateg->getAttributeKeyByHandle($data['akHandle']);
+        $akCategController = $akCateg->getController();
+        $cak = $akCategController->getAttributeKeyByHandle($data['akHandle']);
         if (!is_object($cak)) {
-            return $akCateg->add($atTypeHandle, $data, false, $this->getPackage());
+            return $akCategController->add($atTypeHandle, $data, false, $this->pkg);
         }
 
         return $cak;
     }
 
     /**
-     * Intall PageAttributeSets.
+     * Install SiteAttributeSets.
      *
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Set[]
+     */
+    public function installSiteAttributeSets(array $data)
+    {
+        return $this->installAttributeSets('site', $data);
+    }
+
+    /**
+     * Install PageAttributeSets.
+     *
+     * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Set[]
      */
     public function installPageAttributeSets(array $data)
     {
@@ -377,9 +407,11 @@ class Installer
     }
 
     /**
-     * Intall UserAttributeSets.
+     * Install UserAttributeSets.
      *
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Set[]
      */
     public function installUserAttributeSets(array $data)
     {
@@ -387,9 +419,11 @@ class Installer
     }
 
     /**
-     * Intall FileAttributeSets.
+     * Install FileAttributeSets.
      *
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Set[]
      */
     public function installFileAttributeSets(array $data)
     {
@@ -397,25 +431,32 @@ class Installer
     }
 
     /**
-     * Intall AttributeSets.
+     * Install AttributeSets.
      *
-     * @param \Concrete\Core\Attribute\Category\AbstractStandardCategory $akCateg AttributeKeyCategory object or handle
+     * @param \Concrete\Core\Entity\Attribute\Category|string $akCateg AttributeKeyCategory object or handle
      * @param array $data array of handles and names
+     *
+     * @return \Concrete\Core\Entity\Attribute\Set[]
      */
     public function installAttributeSets($akCateg, array $data)
     {
         if (is_string($akCateg)) {
-            $app = Facade::getFacadeApplication();
-            $akCateg = $app->make(CategoryService::class)->getByHandle($akCateg)->getController();
+            $akCateg = $this->app()->make(CategoryService::class)->getByHandle($akCateg);
         }
 
+        $installedAttrSets = [];
         foreach ($data as $params) {
-            $this->installAttributeSet($akCateg, $params[0], $params[1], isset($params[2]) ? $params[2] : []);
+            $atSet = $this->installAttributeSet($akCateg, $params[0], $params[1], isset($params[2]) ? $params[2] : []);
+            if (is_object($atSet)) {
+                $installedAttrSets[$atSet->getAttributeSetHandle()] = $atSet;
+            }
         }
+
+        return $installedAttrSets;
     }
 
     /**
-     * @param \Concrete\Core\Attribute\Category\AbstractStandardCategory $akCateg
+     * @param \Concrete\Core\Entity\Attribute\Category|string $akCateg
      * @param string $handle
      * @param string $name
      * @param array $associatedAttrs
@@ -425,20 +466,22 @@ class Installer
     public function installAttributeSet($akCateg, $handle, $name, array $associatedAttrs = [])
     {
         if (is_string($akCateg)) {
-            $app = Facade::getFacadeApplication();
-            $akCateg = $app->make(CategoryService::class)->getByHandle($akCateg)->getController();
+            $akCateg = $this->app()->make(CategoryService::class)->getByHandle($akCateg);
         }
 
-        $manager = $akCateg->getSetManager();
-        $factory = new SetFactory($akCateg->getEntityManager());
-        $set = $factory->getByHandle($handle);
+        $akCategController = $akCateg->getController();
+        $manager = $akCategController->getSetManager();
+
+        $set = $this->app()->make(SetFactory::class)->getByHandle($handle);
         if (!is_object($set)) {
-            $set = $manager->addSet($handle, $name, $this->getPackage());
+            $set = $manager->addSet($handle, $name, $this->pkg);
         }
 
         foreach ($associatedAttrs as $akHandle) {
-            $cak = $akCateg->getAttributeKeyByHandle($akHandle);
-            $manager->addKey($set, $cak);
+            $cak = $akCategController->getAttributeKeyByHandle($akHandle);
+            if (is_object($cak)) {
+                $manager->addKey($set, $cak);
+            }
         }
 
         return $set;

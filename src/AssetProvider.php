@@ -1,7 +1,7 @@
 <?php
 namespace XanUtility;
 
-use XanUtility\Asset\AssetList;
+use XanUtility\Asset\UtilityAssetList;
 
 class AssetProvider
 {
@@ -13,26 +13,60 @@ class AssetProvider
             return;
         }
 
-        AssetList::registerMultiple([
-            'xan-utility' => [
-                ['vendor-javascript', 'js/utility.js', ['minify' => true, 'combine' => true]],
+        UtilityAssetList::registerMultiple([
+            'xan/utility' => [
+                ['vendor-javascript', 'js/utility.min.js', ['combine' => true]],
             ],
-            'xan-utility/itemlist' => [
-                ['vendor-javascript', 'js/itemlist.js', ['minify' => true, 'combine' => true]],
+            'xan/item-list' => [
+                ['vendor-javascript', 'js/item-list.min.js', ['combine' => true]],
             ],
-            'xan-utility/selector/page' => [
-                ['vendor-javascript', 'js/selector/page.js', ['minify' => true, 'combine' => true]],
+            'xan/selector/page' => [
+                ['vendor-javascript', 'js/selector/page.min.js', ['combine' => true]],
             ],
-            'xan-utility/selector/file' => [
-                ['vendor-javascript', 'js/selector/file.js', ['minify' => true, 'combine' => true]],
+            'xan/selector/file' => [
+                ['vendor-javascript', 'js/selector/file.min.js', ['combine' => true]],
             ],
-            'xan-utility/alert/dialog' => [
-                ['vendor-javascript', 'js/alert.dialog.js', ['minify' => true, 'combine' => true]],
+            'xan/alert/dialog' => [
+                ['vendor-javascript', 'js/alert.dialog.min.js', ['combine' => true]],
             ],
         ]);
 
-        AssetList::registerGroupMultiple([
-            'xan-utility/itemlist' => [
+        UtilityAssetList::registerGroupMultiple([
+            'xan/item-list' => [
+                [
+                    ['javascript', 'jquery'],
+                    ['javascript', 'underscore'],
+                    ['vendor-javascript', 'xan/item-list'],
+                ],
+            ],
+            'xan/selector/page' => [
+                [
+                    ['javascript', 'jquery'],
+                    ['css', 'core/app'],
+                    ['css', 'jquery/ui'],
+                    ['css', 'core/file-manager'],
+                    ['css', 'fancytree'],
+                    ['css', 'selectize'],
+                    ['css', 'core/sitemap'],
+                    ['javascript', 'core/events'],
+                    ['javascript', 'bootstrap/tooltip'],
+                    ['javascript', 'underscore'],
+                    ['javascript', 'backbone'],
+                    ['javascript', 'jquery/ui'],
+                    ['javascript-localized', 'jquery/ui'],
+                    ['javascript', 'fancytree'],
+                    ['javascript', 'selectize'],
+                    ['javascript-localized', 'fancytree'],
+                    ['javascript-localized', 'core/localization'],
+                    ['javascript', 'core/app'],
+                    ['javascript', 'jquery/fileupload'],
+                    ['javascript', 'core/sitemap'],
+                    ['javascript', 'core/tree'],
+                    ['vendor-javascript', 'xan/utility'],
+                    ['vendor-javascript', 'xan/selector/page'],
+                ],
+            ],
+            'xan/selector/file' => [
                 [
                     ['javascript', 'jquery'],
                     ['css', 'core/app'],
@@ -56,66 +90,11 @@ class AssetProvider
                     ['javascript', 'core/sitemap'],
                     ['javascript', 'core/tree'],
                     ['javascript', 'core/file-manager'],
-                    ['vendor-javascript', 'xan-utility'],
-                    ['vendor-javascript', 'xan-utility/itemlist'],
+                    ['vendor-javascript', 'xan/utility'],
+                    ['vendor-javascript', 'xan/selector/file'],
                 ],
             ],
-            'xan-utility/selector/page' => [
-                [
-                    ['javascript', 'jquery'],
-                    ['css', 'core/app'],
-                    ['css', 'jquery/ui'],
-                    ['css', 'core/file-manager'],
-                    ['css', 'fancytree'],
-                    ['css', 'selectize'],
-                    ['css', 'core/sitemap'],
-                    ['javascript', 'core/events'],
-                    ['javascript', 'bootstrap/tooltip'],
-                    ['javascript', 'underscore'],
-                    ['javascript', 'backbone'],
-                    ['javascript', 'jquery/ui'],
-                    ['javascript-localized', 'jquery/ui'],
-                    ['javascript', 'fancytree'],
-                    ['javascript', 'selectize'],
-                    ['javascript-localized', 'fancytree'],
-                    ['javascript-localized', 'core/localization'],
-                    ['javascript', 'core/app'],
-                    ['javascript', 'jquery/fileupload'],
-                    ['javascript', 'core/sitemap'],
-                    ['javascript', 'core/tree'],
-                    ['vendor-javascript', 'xan-utility'],
-                    ['vendor-javascript', 'xan-utility/selector/page'],
-                ],
-            ],
-            'xan-utility/selector/file' => [
-                [
-                    ['javascript', 'jquery'],
-                    ['css', 'core/app'],
-                    ['css', 'jquery/ui'],
-                    ['css', 'core/file-manager'],
-                    ['css', 'fancytree'],
-                    ['css', 'selectize'],
-                    ['css', 'core/sitemap'],
-                    ['javascript', 'core/events'],
-                    ['javascript', 'bootstrap/tooltip'],
-                    ['javascript', 'underscore'],
-                    ['javascript', 'backbone'],
-                    ['javascript', 'jquery/ui'],
-                    ['javascript-localized', 'jquery/ui'],
-                    ['javascript', 'fancytree'],
-                    ['javascript', 'selectize'],
-                    ['javascript-localized', 'fancytree'],
-                    ['javascript-localized', 'core/localization'],
-                    ['javascript', 'core/app'],
-                    ['javascript', 'jquery/fileupload'],
-                    ['javascript', 'core/sitemap'],
-                    ['javascript', 'core/tree'],
-                    ['javascript', 'core/file-manager'],
-                    ['vendor-javascript', 'xan-utility'],
-                    ['vendor-javascript', 'xan-utility/selector/file'],
-                ],
-            ],
-            'xan-utility/alert/dialog' => [
+            'xan/alert/dialog' => [
                 [
                     ['css', 'core/app'],
                     ['css', 'jquery/ui'],
@@ -132,10 +111,11 @@ class AssetProvider
                     ['javascript-localized', 'fancytree'],
                     ['javascript-localized', 'core/localization'],
                     ['javascript', 'core/app'],
-                    ['vendor-javascript', 'xan-utility/alert/dialog'],
+                    ['vendor-javascript', 'xan/alert/dialog'],
                 ],
             ],
         ]);
+
         self::$alreadyRegistered = true;
     }
 }

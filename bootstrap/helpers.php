@@ -26,18 +26,18 @@ if (!function_exists('mergeSiteConfig')) {
     }
 }
 
-if (!function_exists('c5_app')) {
+if (!function_exists('c5app')) {
     /**
      * Get the root Facade application instance.
      *
      * @param  string  $make
      *
-     * @return mixed
+     * @return \Concrete\Core\Application\Application|object
      */
-    function c5_app($make = null)
+    function c5app($make = null)
     {
         if (!is_null($make)) {
-            return c5_app()->make($make);
+            return c5app()->make($make);
         }
 
         return \Concrete\Core\Support\Facade\Facade::getFacadeApplication();
@@ -270,7 +270,7 @@ if (!function_exists('remove_accents')) {
                 . chr(244) . chr(245) . chr(246) . chr(248) . chr(249) . chr(250) . chr(251)
                 . chr(252) . chr(253) . chr(255);
 
-            $chars['out'] = "EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy";
+            $chars['out'] = 'EfSZszYcYuAAAAAACEEEEIIIINOOOOOOUUUUYaaaaaaceeeeiiiinoooooouuuuyy';
 
             $string = strtr($string, $chars['in'], $chars['out']);
             $double_chars = [];
@@ -299,6 +299,7 @@ if (!function_exists('absolute_path')) {
         if (!starts_with($relPath, ['/', '\\'])) {
             $relPath = DIRECTORY_SEPARATOR . $relPath;
         }
+
         return DIR_BASE . $relPath;
     }
 }

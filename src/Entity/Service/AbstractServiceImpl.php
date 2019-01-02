@@ -1,75 +1,123 @@
 <?php
-
 namespace XanUtility\Entity\Service;
 
-use Concrete\Core\Application\Application;
-use XanUtility\Entity\EntityBase;
-use XanUtility\App;
-
+use Doctrine\ORM\EntityManagerInterface;
 
 abstract class AbstractServiceImpl implements ServiceInterface
 {
     /**
-     * @var Application
+     * @var EntityManagerInterface
      */
-    protected $app;
+    protected $entityManager;
 
-    function __construct(Application $app)
+    public function __construct(EntityManagerInterface $entityManager)
     {
-        $this->app = $app;
+        $this->entityManager = $entityManager;
     }
 
     /**
-     * @inheritdoc
+     * Gets the repository for the entity class.
+     *
+     * @return \Doctrine\ORM\EntityRepository
      */
-    function repo()
+    protected function repo()
     {
-        return App::em()->getRepository($this->getEntityClass());
+        return $this->entityManager->getRepository($this->getEntityClass());
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::createEntity()
      */
-    function newEntity()
+    public function createEntity()
     {
-        return $this->app->make($this->getEntityClass());
+        return c5app()->make($this->getEntityClass());
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::getList()
      */
-    function getList()
+    public function getList()
     {
         return $this->repo()->findAll();
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::getSortedList()
      */
-    function getByID($id)
+    public function getSortedList($orderBy = [])
+    {
+        return $this->repo()->findBy([], $orderBy);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::getByID()
+     */
+    public function getByID($id)
     {
         return $this->repo()->find($id);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::saveData()
      */
-    function saveData(EntityBase $entity, array $data)
+    public function saveData($entity, array $data = [])
     {
         $entity->setPropertiesFromArray($data);
-        $entity->save();
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
 
         return true;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::bulkSave()
      */
-    function delete(EntityBase $entity)
+    public function bulkSave(array $entities)
     {
-        $entity->delete();
+        foreach ($entities as $entity) {
+            $this->entityManager->persist($entity);
+        }
+        $this->entityManager->flush();
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::delete()
+     */
+    public function delete($entity)
+    {
+        $this->entityManager->remove($entity);
+        $this->entityManager->flush();
 
         return true;
     }
 
+    /**
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::bulkDelete()
+     */
+    public function bulkDelete(array $entities)
+    {
+        foreach ($entities as $entity) {
+            $this->entityManager->remove($entity);
+        }
+        $this->entityManager->flush();
+
+        return true;
+    }
 }

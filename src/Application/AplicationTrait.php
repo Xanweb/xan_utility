@@ -1,5 +1,5 @@
 <?php
-namespace XanUtility;
+namespace XanUtility\Application;
 
 use Concrete\Core\Application\Application;
 use Concrete\Core\Support\Facade\Facade;

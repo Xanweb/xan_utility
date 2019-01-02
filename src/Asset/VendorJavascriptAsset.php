@@ -4,10 +4,12 @@ namespace XanUtility\Asset;
 use Concrete\Core\Asset\JavascriptAsset as CoreJavascriptAsset;
 use Concrete\Core\Filesystem\FileLocator;
 use XanUtility\Filesystem\FileLocator\LibraryLocator;
-use Core;
+use XanUtility\Application\ApplicationTrait;
 
 class VendorJavascriptAsset extends CoreJavascriptAsset
 {
+    use ApplicationTrait;
+
     public function getAssetType()
     {
         return 'vendor-javascript';
@@ -21,7 +23,7 @@ class VendorJavascriptAsset extends CoreJavascriptAsset
     public function mapAssetLocation($path)
     {
         if ($this->isAssetLocal()) {
-            $locator = Core::make(FileLocator::class);
+            $locator = $this->app()->make(FileLocator::class);
             $locator->addLocation(new LibraryLocator());
             $r = $locator->getRecord($path);
             $this->setAssetPath($r->file);

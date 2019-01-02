@@ -55,7 +55,7 @@ abstract class BlockController extends CoreBlockController
     {
         $normalized = $this->normalizeArgs($args);
         if (!is_array($normalized)) {
-            throw new Exception(implode("\n", $normalized->getList()));
+            throw new \Exception(implode("\n", $normalized->getList()));
         }
         parent::save($normalized);
     }

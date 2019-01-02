@@ -34,7 +34,7 @@ class Iptc
     /**
      * return the encoding form data.
      *
-     * @return boolean
+     * @return bool
      */
     public function isUtf8Encoded()
     {

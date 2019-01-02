@@ -1,11 +1,10 @@
 <?php
-namespace XanUtility\Entity;
+namespace XanUtility\Foundation;
 
-use XanUtility\App;
+use Concrete\Core\Foundation\ConcreteObject as CoreObject;
 use Doctrine\Common\Collections\ArrayCollection;
-use Core;
 
-abstract class EntityBase implements \JsonSerializable
+abstract class ConcreteObject extends CoreObject implements \JsonSerializable
 {
     /**
      * used for json serialisation.
@@ -13,43 +12,6 @@ abstract class EntityBase implements \JsonSerializable
      * @var \stdClass
      */
     private $jsonObj;
-
-    /**
-     * Finds an entity by its primary key / identifier.
-     *
-     * @param mixed    $id          The identifier
-     * @param int      $lockMode    The lock mode
-     * @param int|null $lockVersion The lock version
-     *
-     * @return static|null The entity instance or NULL if the entity can not be found
-     */
-    public static function getByID($id, $lockMode = null, $lockVersion = null)
-    {
-        return App::em()->getRepository(get_called_class())->find($id, $lockMode, $lockVersion);
-    }
-
-    public function save()
-    {
-        $em = $this->persist();
-        $em->flush();
-    }
-
-    public function persist()
-    {
-        $em = App::em();
-        $em->persist($this);
-
-        return $em;
-    }
-
-    public function delete($flush = true)
-    {
-        $em = App::em();
-        $em->remove($this);
-        if ($flush) {
-            $em->flush();
-        }
-    }
 
     public function setPropertiesFromArray($arr)
     {
@@ -66,7 +28,7 @@ abstract class EntityBase implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        $dh = Core::getFacadeApplication()->make('date');
+        $dh = c5app('date');
         $this->jsonObj = new \stdClass();
         $array = get_object_vars($this);
         foreach ($array as $key => $v) {
@@ -82,7 +44,7 @@ abstract class EntityBase implements \JsonSerializable
         return $this->jsonObj;
     }
 
-    private function jsonSerializeRelatedObj($key, $o)
+    protected function jsonSerializeRelatedObj($key, $o)
     {
         if (!($o instanceof ArrayCollection) && method_exists($o, 'getID')) {
             $this->jsonObj->{$key . 'ID'} = $o->getID();

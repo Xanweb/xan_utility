@@ -1,16 +1,17 @@
 <?php
 namespace XanUtility\Helper;
 
-use Block;
+use Concrete\Core\Block\Block;
+use Concrete\Core\Page\Page as PageObject;
 
 class Page
 {
     /**
-     * @var \Page
+     * @var PageObject
      */
     private $page;
 
-    public function __construct(\Page $page)
+    public function __construct(PageObject $page)
     {
         $this->page = $page;
     }
@@ -28,7 +29,7 @@ class Page
             foreach ($blockIDs as $row) {
                 $ab = Block::getByID($row['bID'], $this->page, $row['arHandle']);
                 if (is_object($ab) && $ab->getBlockTypeHandle() == $btHandle) {
-                    $block = $ab->getInstance();
+                    $block = $ab->getController();
                     break;
                 }
             }
@@ -45,14 +46,14 @@ class Page
     public function getBlocks(array $btHandles)
     {
         $blockIDs = $this->page->getBlockIDs();
-        $blocks = [];
         $handlesCount = count($btHandles);
+        $blocks = [];
 
         $i = 0;
         foreach ($blockIDs as $row) {
             $ab = Block::getByID($row['bID'], $this->page, $row['arHandle']);
-            if (is_object($ab) && in_array($ab->getBlockTypeHandle(), $btHandles)) {
-                $blocks[$ab->getBlockTypeHandle()] = $ab->getInstance();
+            if (is_object($ab) && !isset($blocks[$ab->getBlockTypeHandle()]) && in_array($ab->getBlockTypeHandle(), $btHandles)) {
+                $blocks[$ab->getBlockTypeHandle()] = $ab->getController();
                 ++$i;
                 if ($handlesCount == $i) {
                     break;

@@ -3,16 +3,11 @@ namespace XanUtility\Asset;
 
 use Concrete\Core\Asset\AssetList as CoreAssetList;
 
-class AssetList
+class UtilityAssetList
 {
-    public static function register($assetType, $assetHandle, $filename, $args = [], $pkg = false)
+    public static function register($assetHandle, $filename, $args = [])
     {
         $al = CoreAssetList::getInstance();
-        $class = '\\XanUtility\\Asset\\' . Object::camelcase($assetType) . 'Asset';
-        if (!class_exists($class)) {
-            return $al->register($assetType, $assetHandle, $filename, $args);
-        }
-
         $defaults = [
             'position' => false,
             'local' => true,
@@ -20,11 +15,12 @@ class AssetList
             'combine' => -1,
             'minify' => -1, // use the asset default
         ];
+
         // overwrite all the defaults with the arguments
         $args = array_merge($defaults, $args);
 
-        $o = new $class($assetHandle);
-        $o->register($filename, $args, $pkg);
+        $o = new VendorJavascriptAsset($assetHandle);
+        $o->register($filename, $args);
         $al->registerAsset($o);
 
         return $o;
@@ -44,6 +40,6 @@ class AssetList
     {
         $al = CoreAssetList::getInstance();
 
-        return $al->registerGroupMultiple($assetGroups);
+        $al->registerGroupMultiple($assetGroups);
     }
 }

@@ -16,7 +16,9 @@ class Import
 
     /**
      * Import constructor.
+     *
      * @param File $file
+     *
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */
     public function __construct($file)
@@ -47,7 +49,7 @@ class Import
                     }
                     $sheetData[] = $rowData;
                 }
-                $this->data[] = ["name" => $sheet->getTitle(), 'data' => $sheetData];
+                $this->data[] = ['name' => $sheet->getTitle(), 'data' => $sheetData];
             }
         }
     }

@@ -1,6 +1,6 @@
 !function(global, $) {
     'use strict';
-    
+
     function XanUtility() {
         
     }
@@ -12,4 +12,4 @@
     };
     
     global.XanUtility = XanUtility;
-}(window, $);     
+}(window, $);

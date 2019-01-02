@@ -1,5 +1,5 @@
 <?php
-namespace XanUtility\Object;
+namespace XanUtility\Foundation\Object;
 
 /**
  * Class usefull to get or set private/protected properties of an object.

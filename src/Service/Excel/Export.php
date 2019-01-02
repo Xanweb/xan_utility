@@ -53,7 +53,9 @@ class Export
 
     /**
      * Download Excel File.
+     *
      * @param $fileName
+     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
@@ -89,8 +91,10 @@ class Export
 
     /**
      * Save The Excel file under the given directory.
+     *
      * @param $fileName
      * @param $dirPath
+     *
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
     public function saveAs($fileName, $dirPath)
@@ -110,13 +114,15 @@ class Export
     }
 
     /**
-     * Insert Content in Excel Worksheet
+     * Insert Content in Excel Worksheet.
+     *
      * @param string $tabName tabulationName
      * @param array $headers columns names
      * @param array $data rows
      * @param bool $createNewTab boolean indicate that we like to create New tab
      *
      * @return array(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet, int)
+     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Style\Exception
      */
@@ -131,7 +137,7 @@ class Export
         $activeSheet = $this->phpExcel->getActiveSheet();
         $tabName = str_replace(['*', ':', '?', '[', ']'], '', $tabName); // Remove invalid Chars
         $tabName = str_replace(['\\', '/'], '-', $tabName);
-        $tabName = substr($tabName, 0, 30);// Maximum 31 characters allowed in sheet title
+        $tabName = substr($tabName, 0, 30); // Maximum 31 characters allowed in sheet title
         $activeSheet->setTitle($tabName, false);
 
         $rowCount = $this->startRow;
@@ -166,13 +172,13 @@ class Export
             }
             ++$rowCount;
         }
-        
+
         $lastRowIndex = $rowCount - 1;
         $indexLastCell = Coordinate::stringFromColumnIndex($colIdx);
         $contentStyle = $activeSheet->getStyle("A{$contentStartRow}:{$indexLastCell}{$lastRowIndex}");
         $contentStyle->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
         $contentStyle->getAlignment()->setWrapText(true);
-        
+
         return [$activeSheet, $rowCount];
     }
 
