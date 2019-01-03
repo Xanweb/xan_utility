@@ -36,10 +36,4 @@ class UtilityAssetList
         }
     }
 
-    public static function registerGroupMultiple(array $assetGroups)
-    {
-        $al = CoreAssetList::getInstance();
-
-        $al->registerGroupMultiple($assetGroups);
-    }
 }

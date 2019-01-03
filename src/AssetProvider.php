@@ -1,6 +1,7 @@
 <?php
 namespace XanUtility;
 
+use Concrete\Core\Asset\AssetList;
 use XanUtility\Asset\UtilityAssetList;
 
 class AssetProvider
@@ -13,28 +14,32 @@ class AssetProvider
             return;
         }
 
-        UtilityAssetList::registerMultiple([
-            'xan/utility' => [
-                ['vendor-javascript', 'js/utility.min.js', ['combine' => true]],
-            ],
+        $al = AssetList::getInstance();
+        $al->registerMultiple([
             'xan/utility/global' => [
                 ['javascript-localized', '/js/xan/utility/global.js', ['minify' => true, 'combine' => true]],
             ],
+        ]);
+
+        UtilityAssetList::registerMultiple([
+            'xan/utility' => [
+                ['js/utility.min.js', ['combine' => true]],
+            ],
             'xan/item-list' => [
-                ['vendor-javascript', 'js/item-list.min.js', ['combine' => true]],
+                ['js/item-list.min.js', ['combine' => true]],
             ],
             'xan/selector/page' => [
-                ['vendor-javascript', 'js/selector/page.min.js', ['combine' => true]],
+                ['js/selector/page.min.js', ['combine' => true]],
             ],
             'xan/selector/file' => [
-                ['vendor-javascript', 'js/selector/file.min.js', ['combine' => true]],
+                ['js/selector/file.min.js', ['combine' => true]],
             ],
             'xan/alert/dialog' => [
-                ['vendor-javascript', 'js/alert.dialog.min.js', ['combine' => true]],
+                ['js/alert.dialog.min.js', ['combine' => true]],
             ],
         ]);
 
-        UtilityAssetList::registerGroupMultiple([
+        $al->registerGroupMultiple([
             'xan/item-list' => [
                 [
                     ['javascript', 'jquery'],
