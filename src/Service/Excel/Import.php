@@ -5,7 +5,6 @@ use PhpOffice\PhpSpreadsheet\Cell\Cell;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Concrete\Core\Error\ErrorList\ErrorList;
-use Concrete\Core\File\File;
 
 class Import
 {
@@ -17,7 +16,7 @@ class Import
     /**
      * Import constructor.
      *
-     * @param File $file
+     * @param \Concrete\Core\Entity\File\File $file
      *
      * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
      */

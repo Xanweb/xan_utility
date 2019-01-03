@@ -40,9 +40,12 @@ class Export
         $this->startRow = (int) $startRow;
     }
 
-    private function setFileProprietes()
+    /**
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     */
+    private function setFileProperties()
     {
-        $u = new User();
+        $u = $this->app->make(User::class);
         // Set document properties
         $this->phpExcel->getProperties()
                             ->setCreator($u->getUserName())
@@ -63,7 +66,7 @@ class Export
     {
         ob_end_clean();
         set_time_limit(0);
-        $this->setFileProprietes();
+        $this->setFileProperties();
 
         if (!ends_with($fileName, '.xlsx')) {
             $fileName .= '.xlsx';
@@ -96,10 +99,11 @@ class Export
      * @param $dirPath
      *
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
      */
     public function saveAs($fileName, $dirPath)
     {
-        $this->setFileProprietes();
+        $this->setFileProperties();
 
         if (!ends_with($fileName, '.xlsx')) {
             $fileName .= '.xlsx';
@@ -124,7 +128,6 @@ class Export
      * @return array(\PhpOffice\PhpSpreadsheet\Worksheet\Worksheet, int)
      *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Style\Exception
      */
     public function addTabContent($tabName = '', array $headers = [], array $data = [], $createNewTab = false)
     {

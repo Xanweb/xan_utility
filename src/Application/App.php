@@ -16,7 +16,7 @@ abstract class App
         if (!self::$pkgHandle) {
             $class = new \ReflectionClass(get_called_class());
             $path = str_replace(DIR_PACKAGES . '/', '', str_replace(DIRECTORY_SEPARATOR, '/', $class->getFilename()));
-            self::$pkgHandle = reset(explode('/', $path));
+            self::$pkgHandle = head(explode('/', $path));
         }
 
         return self::$pkgHandle;

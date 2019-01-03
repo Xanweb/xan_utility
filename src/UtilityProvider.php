@@ -7,20 +7,13 @@ class UtilityProvider extends ServiceProvider
 {
     public function register()
     {
-        $register = [
+        $aliases = [
             'excel/export' => Service\Excel\Export::class,
             'excel/import' => Service\Excel\Import::class,
         ];
 
-        foreach ($register as $key => $value) {
-            $this->app->bindIf($key, $value);
-        }
-
-        $singletons = [
-        ];
-
-        foreach ($singletons as $key => $value) {
-            $this->app->bindIf($key, $value, true);
+        foreach ($aliases as $alias => $class) {
+            $this->app->alias($class, $alias);
         }
     }
 }
