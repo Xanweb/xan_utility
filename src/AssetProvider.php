@@ -17,6 +17,9 @@ class AssetProvider
             'xan/utility' => [
                 ['vendor-javascript', 'js/utility.min.js', ['combine' => true]],
             ],
+            'xan/utility/global' => [
+                ['javascript-localized', '/js/xan/utility/global.js', ['minify' => true, 'combine' => true]],
+            ],
             'xan/item-list' => [
                 ['vendor-javascript', 'js/item-list.min.js', ['combine' => true]],
             ],
@@ -36,6 +39,7 @@ class AssetProvider
                 [
                     ['javascript', 'jquery'],
                     ['javascript', 'underscore'],
+                    ['javascript-localized', 'xan/utility/global'],
                     ['vendor-javascript', 'xan/item-list'],
                 ],
             ],

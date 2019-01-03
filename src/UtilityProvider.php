@@ -8,6 +8,7 @@ class UtilityProvider extends ServiceProvider
     public function register()
     {
         $aliases = [
+            'database/connection' => 'Concrete\Core\Database\Connection\Connection',
             'excel/export' => Service\Excel\Export::class,
             'excel/import' => Service\Excel\Import::class,
         ];

@@ -7,6 +7,6 @@
     },
     "autoload": {
         "psr-4": { "XanUtility\\": "src/", "XanUtility\\Controller\\": "controllers/" },
-        "files": [ "bootstrap/start.php", "bootstrap/helpers.php" ]
+        "files": [ "bootstrap/helpers.php" ]
     }
 }
