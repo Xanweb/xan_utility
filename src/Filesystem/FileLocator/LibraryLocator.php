@@ -5,7 +5,7 @@ use Concrete\Core\Filesystem\FileLocator\AbstractLocation;
 
 class LibraryLocator extends AbstractLocation
 {
-    const LIB_HANDLE = 'utility';
+    const LIB_HANDLE = 'xan_utility';
 
     private $baseDir;
 
