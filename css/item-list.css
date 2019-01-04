@@ -1,0 +1,103 @@
+
+.ccm-ui .ccm-block-edit-container {
+    padding-bottom: 15px;
+    position: relative;
+}
+.ccm-ui .ccm-block-edit-container fieldset {
+    margin-bottom: 10px !important;
+    padding-bottom: 10px !important;
+}
+.ccm-block-edit-container .redactor_editor {
+    padding: 20px;
+}
+.ccm-block-edit-container input[type="text"],
+.ccm-block-edit-container textarea {
+    display: block;
+    width: 100%;
+}
+.ccm-block-edit-container .btn-success {
+    margin-bottom: 20px;
+}
+
+.ccm-block-edit-container .ccm-item-list {
+    padding-bottom: 30px;
+}
+
+.ccm-block-edit-container .ccm-item-list .label-shell {
+    margin-top: 9px;
+}
+
+.ccm-block-edit-container .ccm-item-list .btn-delete-item i {
+    margin-top: 13px;
+}
+
+.ccm-block-edit-container .ccm-item-list .well {
+    padding: 0 15px;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.ccm-block-edit-container .ccm-item-list .well .label-shell {
+    margin-top: 10px;
+}
+.ccm-block-edit-container .ccm-item-list .btn-delete-item {
+    position: absolute;
+    right: 15px;
+}
+.ccm-block-edit-container .ccm-item-list .well .panel-heading {
+    width: 100%;
+    padding: 5px 15px;
+    cursor: pointer;
+}
+.ccm-block-edit-container .ccm-item-list .ui-sortable-helper .panel-heading {
+    cursor: move !important;
+}
+.ccm-block-edit-container .ccm-item-list .panel-body {
+    width: 100%;
+}
+.ccm-block-edit-container .ccm-pick-multi-teaser-image {
+    padding: 15px;
+    cursor: pointer;
+    background: #dedede;
+    border: 1px solid #cdcdcd;
+    text-align: center;
+    vertical-align: center;
+}
+
+.ccm-block-edit-container .ccm-pick-multi-teaser-image img {
+    max-width: 100%;
+}
+
+.ccm-block-edit-container .ccm-item-list .ccm-item-entry {
+    position: relative;
+}
+
+.ccm-block-edit-container i.fa-sort-asc {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.ccm-block-edit-container i.fa-sort-desc {
+    position: absolute;
+    top: 15px;
+    cursor: pointer;
+    right: 10px;
+}
+
+.ccm-ui div.floating-block-actions {
+    width: 97%;
+    background: white;
+    position: absolute;
+    bottom: 60px;
+    left: 0;
+    right: 17px;
+    padding: 15px 3.5% 15px 25px;
+    z-index: 150;
+    box-shadow: -9px -2px 50px -5px rgba(5,5,5,0.1);
+    opacity: 0.9;
+}
+.ccm-ui div.floating-block-actions:hover {
+    opacity: 1;
+}
