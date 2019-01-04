@@ -5,7 +5,7 @@ use Concrete\Core\Asset\AssetList as CoreAssetList;
 
 class UtilityAssetList
 {
-    public static function register($assetHandle, $filename, $args = [])
+    public static function registerJavascript($assetHandle, $filename, $args = [])
     {
         $al = CoreAssetList::getInstance();
         $defaults = [
@@ -26,14 +26,38 @@ class UtilityAssetList
         return $o;
     }
 
-    public static function registerMultiple(array $assets)
+    public static function registerMultipleJavascript(array $assets)
     {
-        foreach ($assets as $handle => $types) {
-            foreach ($types as $settings) {
-                array_splice($settings, 1, 0, $handle);
-                call_user_func_array([self::class, 'register'], $settings);
-            }
+        foreach ($assets as $settings) {
+            call_user_func_array([self::class, 'registerJavascript'], $settings);
         }
     }
 
+    public static function registerCss($assetHandle, $filename, $args = [])
+    {
+        $al = CoreAssetList::getInstance();
+        $defaults = [
+            'position' => false,
+            'local' => true,
+            'version' => false,
+            'combine' => -1,
+            'minify' => -1, // use the asset default
+        ];
+
+        // overwrite all the defaults with the arguments
+        $args = array_merge($defaults, $args);
+
+        $o = new VendorCssAsset($assetHandle);
+        $o->register($filename, $args);
+        $al->registerAsset($o);
+
+        return $o;
+    }
+
+    public static function registerMultipleCss(array $assets)
+    {
+        foreach ($assets as $settings) {
+            call_user_func_array([self::class, 'registerCss'], $settings);
+        }
+    }
 }

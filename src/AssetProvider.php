@@ -21,22 +21,16 @@ class AssetProvider
             ],
         ]);
 
-        UtilityAssetList::registerMultiple([
-            'xan/utility' => [
-                ['js/utility.min.js', ['combine' => true]],
-            ],
-            'xan/item-list' => [
-                ['js/item-list.min.js', ['combine' => true]],
-            ],
-            'xan/selector/page' => [
-                ['js/selector/page.min.js', ['combine' => true]],
-            ],
-            'xan/selector/file' => [
-                ['js/selector/file.min.js', ['combine' => true]],
-            ],
-            'xan/alert/dialog' => [
-                ['js/alert.dialog.min.js', ['combine' => true]],
-            ],
+        UtilityAssetList::registerMultipleCss([
+            ['xan/item-list', 'css/item-list.css', ['combine' => true]],
+        ]);
+
+        UtilityAssetList::registerMultipleJavascript([
+            ['xan/utility', 'js/utility.min.js', ['combine' => true]],
+            ['xan/item-list', 'js/item-list.min.js', ['combine' => true]],
+            ['xan/selector/page', 'js/selector/page.min.js', ['combine' => true]],
+            ['xan/selector/file', 'js/selector/file.min.js', ['combine' => true]],
+            ['xan/alert/dialog', 'js/alert.dialog.min.js', ['combine' => true]],
         ]);
 
         $al->registerGroupMultiple([
@@ -46,6 +40,7 @@ class AssetProvider
                     ['javascript', 'underscore'],
                     ['javascript-localized', 'xan/utility/global'],
                     ['vendor-javascript', 'xan/item-list'],
+                    ['vendor-css', 'xan/item-list'],
                 ],
             ],
             'xan/selector/page' => [
