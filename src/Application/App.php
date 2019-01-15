@@ -32,7 +32,7 @@ abstract class App
         if (!is_object(self::$pkg)) {
             self::$pkg = c5app()
                 ->make('Concrete\Core\Package\PackageService')
-                ->getByHandle(self::pkgHandle());
+                ->getByHandle(static::pkgHandle());
         }
 
         return self::$pkg;
