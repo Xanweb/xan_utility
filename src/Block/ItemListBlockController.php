@@ -52,13 +52,14 @@ abstract class ItemListBlockController extends CoreBlockController
      */
     protected function loadItems()
     {
-        $cache = $this->app->make('cache/request');
+        $cache = \Core::make('cache/request');
         $cacheItem = $cache->getItem(sprintf('block/%s/items', $this->bID));
 
         if ($this->cacheBlockRecord() && !$cacheItem->isMiss() && Config::get('concrete.cache.blocks')) {
             $this->items = $cacheItem->get();
         } else {
-            $qb = $this->db->createQueryBuilder()->select('*')->from($this->getItemListTable());
+            $db = \Database::connection();
+            $qb = $db->createQueryBuilder()->select('*')->from($this->getItemListTable());
             $qb->where($qb->expr()->eq('bID', ':bID'))->setParameter('bID', $this->bID);
             $this->items = Collection::make($qb->execute()->fetchAll());
 
