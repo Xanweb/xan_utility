@@ -329,6 +329,10 @@ abstract class ItemListBlockController extends CoreBlockController
      */
     public function getItems(array $sort = [])
     {
+        if(!$this->items) {
+            return Collection::make([]);
+        }
+
         if (!empty($sort)) {
             $sortedItems = $this->items;
 
