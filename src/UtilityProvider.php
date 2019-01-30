@@ -8,7 +8,12 @@ class UtilityProvider extends ServiceProvider
 {
     public function register()
     {
+        if(!$this->app->bound(User::class)) {
+            $this->app->singleton(User::class);
+        }
+
         $aliases = [
+            'user/current' => User::class,
             'database/connection' => 'Concrete\Core\Database\Connection\Connection',
             'excel/export' => Service\Excel\Export::class,
             'excel/import' => Service\Excel\Import::class,
@@ -16,10 +21,6 @@ class UtilityProvider extends ServiceProvider
 
         foreach ($aliases as $alias => $class) {
             $this->app->alias($class, $alias);
-        }
-
-        if(!$this->app->bound(User::class)) {
-            $this->app->singleton([User::class => 'user/current']);
         }
     }
 }
