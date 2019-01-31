@@ -1,5 +1,5 @@
 <?php
-namespace Concrete\Package\SwiperGallery\Html;
+namespace XanUtility\Image;
 
 use Concrete\Core\File\Image\Thumbnail\Type\Type as ThumbnailType;
 use Concrete\Core\Html\Object\Picture;
@@ -39,6 +39,9 @@ class ExtendedImage extends Image
         $this->image = $f;
     }
 
+    /**
+     * @return \HtmlObject\Image
+     */
 
     public function getTag()
     {
@@ -50,13 +53,13 @@ class ExtendedImage extends Image
 
             if ($this->usePictureTag) {
                 $fallbackSrc = $baseSrc;
-                $sources = array();
+                $sources = [];
 
                 foreach ($this->theme->getThemeResponsiveImageMap() as $thumbnail => $width) {
                     $type = ThumbnailType::getByHandle($thumbnail);
                     if ($type != null) {
                         $src = $this->image->getThumbnailURL($type->getBaseVersion());
-                        $sources[] = array('src' => $src, 'width' => $width);
+                        $sources[] = ['src' => $src, 'width' => $width];
                         if ($width == 0) {
                             $fallbackSrc = $src;
                         }
@@ -86,12 +89,12 @@ class ExtendedImage extends Image
             $fallbackSrc = $this->image->getURL();
         }
 
-        $sources = array();
+        $sources = [];
         foreach ($this->theme->getThemeResponsiveImageMap() as $thumbnail => $width) {
             $type = ThumbnailType::getByHandle($thumbnail);
             if ($type != null) {
                 $thumb = $this->fitAspectRatio($ratio, $width);
-                $sources[] = array('src' => $thumb->src, 'width' => $width);
+                $sources[] = ['src' => $thumb->src, 'width' => $width];
                 if ($width == 0) {
                     $fallbackSrc = $thumb->src;
                 }
