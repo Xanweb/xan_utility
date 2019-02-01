@@ -1,5 +1,5 @@
 <?php
-namespace XanUtility\Image;
+namespace XanUtility\Image\Html;
 
 use Concrete\Core\File\Image\Thumbnail\Type\Type as ThumbnailType;
 use Concrete\Core\Html\Object\Picture;
@@ -40,9 +40,8 @@ class ExtendedImage extends Image
     }
 
     /**
-     * @return \HtmlObject\Image
+     * @return \HtmlObject\Image\Picture
      */
-
     public function getTag()
     {
         if (!$this->tag) {

@@ -22,5 +22,14 @@ class UtilityProvider extends ServiceProvider
         foreach ($aliases as $alias => $class) {
             $this->app->alias($class, $alias);
         }
+        $this->app->bind('html/image/ratio', Image\Html\ExtendedImage::class);
+        $this->app->singleton(Image\Html\ExtendedImage::class);
+    }
+
+    public function provides()
+    {
+        return [
+            'html/image/ratio',
+        ];
     }
 }
