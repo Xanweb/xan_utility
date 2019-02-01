@@ -17,19 +17,12 @@ class UtilityProvider extends ServiceProvider
             'database/connection' => 'Concrete\Core\Database\Connection\Connection',
             'excel/export' => Service\Excel\Export::class,
             'excel/import' => Service\Excel\Import::class,
+            'html/image' => Image\Html\ExtendedImage::class,
         ];
 
         foreach ($aliases as $alias => $class) {
             $this->app->alias($class, $alias);
         }
         $this->app->bind('html/image/ratio', Image\Html\ExtendedImage::class);
-        $this->app->singleton(Image\Html\ExtendedImage::class);
-    }
-
-    public function provides()
-    {
-        return [
-            'html/image/ratio',
-        ];
     }
 }
