@@ -20,7 +20,8 @@
         "phpoffice/phpspreadsheet": "^1.6"
     },
     "autoload": {
-        "psr-4": { "XanUtility\\": "src/", "XanUtility\\Controller\\": "controllers/" },
+        "exclude-from-classmap": ["/concrete/vendor/doctrine/orm/lib/Doctrine/ORM/Tools/Pagination/LimitSubqueryOutputWalker.php"],
+        "psr-4": { "XanUtility\\": "src/", "XanUtility\\Controller\\": "controllers/", "Doctrine\\": "src/Doctrine"},
         "files": [ "bootstrap/helpers.php" ]
     }
 }
