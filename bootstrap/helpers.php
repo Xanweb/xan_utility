@@ -317,3 +317,22 @@ if (!function_exists('is_absolute_path')) {
         return strpos($path, DIR_BASE) !== false;
     }
 }
+
+if (!function_exists('get_theme_path')) {
+    /**
+     * Get theme relative path.
+     *
+     *
+     * @return string
+     */
+    function get_theme_path()
+    {
+        static $themePath;
+
+        if (!$themePath) {
+            $themePath = PageTheme::getSiteTheme()->getThemeURL();
+        }
+
+        return $themePath;
+    }
+}
