@@ -135,7 +135,8 @@
             });
         },
         initPageSelectors: function ($item) {
-            $item.find('div[data-field=page-selector]').each(function(i){
+            var my = this;
+            $item.find('div[data-field=page-selector]').each(function(){
                 $(this).xanPageSelector({
                     inputName: $(this).data('name'),
                     cID: parseInt($(this).data('value')),
@@ -144,7 +145,8 @@
             });
         },
         initFileSelectors: function ($item) {
-            $item.find('div[data-field=file-selector]').each(function(i){
+            var my = this;
+            $item.find('div[data-field=file-selector]').each(function(){
                 $(this).concreteFileSelector({
                     inputName: $(this).data('name'),
                     fID: parseInt($(this).data('value')),
