@@ -28,8 +28,8 @@ class AssetProvider
         UtilityAssetList::registerMultipleJavascript([
             ['xan/utility', 'js/utility.min.js', ['combine' => true]],
             ['xan/item-list', 'js/item-list.min.js', ['combine' => true]],
-            ['xan/selector/page', 'js/selector/page.min.js', ['combine' => true]],
-            ['xan/selector/file', 'js/selector/file.min.js', ['combine' => true]],
+            ['xan/sitemap', 'js/selector/page.min.js', ['combine' => true]],
+            ['xan/file-manager', 'js/selector/file.min.js', ['combine' => true]],
             ['xan/alert/dialog', 'js/alert.dialog.min.js', ['combine' => true]],
         ]);
 
@@ -43,60 +43,21 @@ class AssetProvider
                     ['vendor-css', 'xan/item-list'],
                 ],
             ],
-            'xan/selector/page' => [
-                [
-                    ['javascript', 'jquery'],
-                    ['css', 'core/app'],
-                    ['css', 'jquery/ui'],
-                    ['css', 'core/file-manager'],
-                    ['css', 'fancytree'],
-                    ['css', 'selectize'],
-                    ['css', 'core/sitemap'],
-                    ['javascript', 'core/events'],
-                    ['javascript', 'bootstrap/tooltip'],
-                    ['javascript', 'underscore'],
-                    ['javascript', 'backbone'],
-                    ['javascript', 'jquery/ui'],
-                    ['javascript-localized', 'jquery/ui'],
-                    ['javascript', 'fancytree'],
-                    ['javascript', 'selectize'],
-                    ['javascript-localized', 'fancytree'],
-                    ['javascript-localized', 'core/localization'],
-                    ['javascript', 'core/app'],
-                    ['javascript', 'jquery/fileupload'],
-                    ['javascript', 'core/sitemap'],
-                    ['javascript', 'core/tree'],
-                    ['vendor-javascript', 'xan/utility'],
-                    ['vendor-javascript', 'xan/selector/page'],
-                ],
+            'xan/sitemap' => [
+                array_merge(self::getAssetGroupAssets('core/sitemap'),
+                    [
+                        ['vendor-javascript', 'xan/utility'],
+                        ['vendor-javascript', 'xan/sitemap'],
+                    ]
+                ),
             ],
-            'xan/selector/file' => [
-                [
-                    ['javascript', 'jquery'],
-                    ['css', 'core/app'],
-                    ['css', 'jquery/ui'],
-                    ['css', 'core/file-manager'],
-                    ['css', 'fancytree'],
-                    ['css', 'selectize'],
-                    ['css', 'core/sitemap'],
-                    ['javascript', 'core/events'],
-                    ['javascript', 'bootstrap/tooltip'],
-                    ['javascript', 'underscore'],
-                    ['javascript', 'backbone'],
-                    ['javascript', 'jquery/ui'],
-                    ['javascript-localized', 'jquery/ui'],
-                    ['javascript', 'fancytree'],
-                    ['javascript', 'selectize'],
-                    ['javascript-localized', 'fancytree'],
-                    ['javascript-localized', 'core/localization'],
-                    ['javascript', 'core/app'],
-                    ['javascript', 'jquery/fileupload'],
-                    ['javascript', 'core/sitemap'],
-                    ['javascript', 'core/tree'],
-                    ['javascript', 'core/file-manager'],
-                    ['vendor-javascript', 'xan/utility'],
-                    ['vendor-javascript', 'xan/selector/file'],
-                ],
+            'xan/file-manager' => [
+                array_merge(self::getAssetGroupAssets('core/file-manager'),
+                    [
+                        ['vendor-javascript', 'xan/utility'],
+                        ['vendor-javascript', 'xan/file-manager'],
+                    ]
+                ),
             ],
             'xan/alert/dialog' => [
                 [
@@ -121,5 +82,23 @@ class AssetProvider
         ]);
 
         self::$alreadyRegistered = true;
+    }
+
+    /**
+     * Get AssetGroup Assets
+     * @return array
+     */
+    private static function getAssetGroupAssets($assetGroupHandle)
+    {
+        $assets = [];
+
+        $al = AssetList::getInstance();
+        $assetGroup = $al->getAssetGroup($assetGroupHandle);
+
+        foreach ($assetGroup->getAssets() as $asset) {
+            $assets[] = [$asset->getAssetType(), $asset->getAssetHandle()];
+        }
+
+        return $assets;
     }
 }

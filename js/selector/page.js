@@ -19,14 +19,15 @@
             }
             var page = r.pages[0];
             my.$element.html(my._pageLoadedTemplate({'inputName': my.options.inputName, 'page': page}));
-            my.$element.on('click', 'a[data-page-selector-action=clear]', function (e) {
+            my.$element.on('click', 'a[data-page-selector-action=clear]', function(e) {
                 e.preventDefault();
                 my.$element.html(my._chooseTemplate);
             });
+
+            if(my.options.onChange) {
+                my.options.onChange(my.$element, r);
+            }
         });
-        if(my.options.onChange) {
-            my.options.onChange(my.$element, cID);
-        }
     };
 
     // jQuery Plugin

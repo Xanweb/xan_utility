@@ -61,9 +61,15 @@
             my.initRichTextEditors($newItem);
             my.detectCheckboxes($newItem);
             my.setupChoiceToggler($newItem);
+
             if(my.extraItemLoad) {
                 my.extraItemLoad($newItem, item);
             }
+
+            if(my.options.extraItemLoad !== undefined) {
+                my.options.extraItemLoad($newItem, item);
+            }
+
             return $newItem;
         },
         setupItemHeaderAction: function() {
@@ -130,9 +136,10 @@
         },
         initPageSelectors: function ($item) {
             $item.find('div[data-field=page-selector]').each(function(i){
-                $(this).concretePageSelector({
+                $(this).xanPageSelector({
                     inputName: $(this).data('name'),
-                    cID: parseInt($(this).data('value'))
+                    cID: parseInt($(this).data('value')),
+                    onChange: my.options.onSelectPage
                 });
             });
         },
