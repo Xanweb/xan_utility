@@ -43,13 +43,13 @@ class AssetProvider
                     ['vendor-css', 'xan/item-list'],
                 ],
             ],
-            'xan/sitemap' => array_merge(self::getAssetGroupAssets('core/sitemap'), [
+            'xan/sitemap' => self::mergeAssets(self::getAssetGroupAssets('core/sitemap'), [
                 [
                     ['vendor-javascript', 'xan/utility'],
                     ['vendor-javascript', 'xan/sitemap'],
                 ]
             ]),
-            'xan/file-manager' => array_merge(self::getAssetGroupAssets('core/file-manager'), [
+            'xan/file-manager' => self::mergeAssets(self::getAssetGroupAssets('core/file-manager'), [
                 [
                     ['vendor-javascript', 'xan/utility'],
                     ['vendor-javascript', 'xan/file-manager'],
@@ -89,5 +89,23 @@ class AssetProvider
     private static function getAssetGroupAssets($assetGroupHandle)
     {
         return c5app('config')->get("app.asset_groups.{$assetGroupHandle}");
+    }
+
+    private static function mergeAssets(array $assets1, array $assets2)
+    {
+        $limit = max(count($assets1), count($assets2));
+        $result = [];
+
+        for ($i = 0; $i < $limit; $i++) {
+            if(isset($assets1[$i]) && isset($assets2[$i])) {
+                $result[$i] = array_merge($assets1[$i], $assets2[$i]);
+            } elseif (isset($assets1[$i])) {
+                $result[$i] = $assets1[$i];
+            } else {
+                $result[$i] = $assets2[$i];
+            }
+        }
+
+        return $result;
     }
 }
