@@ -13,7 +13,7 @@
     XanFileSelector.prototype.loadFile = function(fID, callback) {
         var my = this;
 
-        var extendedCallback = function(r){
+        var extendedCallback = function(r) {
             if(my.options.onChange !== undefined) {
                 my.options.onChange(my.$element, r);
             }

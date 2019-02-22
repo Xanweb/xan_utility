@@ -147,7 +147,8 @@
             $item.find('div[data-field=file-selector]').each(function(i){
                 $(this).concreteFileSelector({
                     inputName: $(this).data('name'),
-                    fID: parseInt($(this).data('value'))
+                    fID: parseInt($(this).data('value')),
+                    onChange: my.options.onSelectFile
                 });
             });
         },

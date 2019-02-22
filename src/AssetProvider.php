@@ -43,22 +43,18 @@ class AssetProvider
                     ['vendor-css', 'xan/item-list'],
                 ],
             ],
-            'xan/sitemap' => [
-                array_merge(self::getAssetGroupAssets('core/sitemap'),
-                    [
-                        ['vendor-javascript', 'xan/utility'],
-                        ['vendor-javascript', 'xan/sitemap'],
-                    ]
-                ),
-            ],
-            'xan/file-manager' => [
-                array_merge(self::getAssetGroupAssets('core/file-manager'),
-                    [
-                        ['vendor-javascript', 'xan/utility'],
-                        ['vendor-javascript', 'xan/file-manager'],
-                    ]
-                ),
-            ],
+            'xan/sitemap' => array_merge(self::getAssetGroupAssets('core/sitemap'), [
+                [
+                    ['vendor-javascript', 'xan/utility'],
+                    ['vendor-javascript', 'xan/sitemap'],
+                ]
+            ]),
+            'xan/file-manager' => array_merge(self::getAssetGroupAssets('core/file-manager'), [
+                [
+                    ['vendor-javascript', 'xan/utility'],
+                    ['vendor-javascript', 'xan/file-manager'],
+                ]
+            ]),
             'xan/alert/dialog' => [
                 [
                     ['css', 'core/app'],
@@ -86,19 +82,12 @@ class AssetProvider
 
     /**
      * Get AssetGroup Assets
+     * @param string $assetGroupHandle
+     *
      * @return array
      */
     private static function getAssetGroupAssets($assetGroupHandle)
     {
-        $assets = [];
-
-        $al = AssetList::getInstance();
-        $assetGroup = $al->getAssetGroup($assetGroupHandle);
-
-        foreach ($assetGroup->getAssets() as $asset) {
-            $assets[] = [$asset->getAssetType(), $asset->getAssetHandle()];
-        }
-
-        return $assets;
+        return c5app('config')->get("app.asset_groups.{$assetGroupHandle}");
     }
 }
