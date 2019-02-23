@@ -3,8 +3,6 @@ namespace XanUtility\Application;
 
 abstract class App
 {
-    private static $pkgHandle;
-    private static $pkg;
 
     /**
      * Get current package handle.
@@ -13,13 +11,7 @@ abstract class App
      */
     public static function pkgHandle()
     {
-        if (!self::$pkgHandle) {
-            $class = new \ReflectionClass(get_called_class());
-            $path = str_replace(DIR_PACKAGES . '/', '', str_replace(DIRECTORY_SEPARATOR, '/', $class->getFilename()));
-            self::$pkgHandle = head(explode('/', $path));
-        }
-
-        return self::$pkgHandle;
+        throw new \Exception(get_called_class(). ':' . __METHOD__ . ' need to be implemented');
     }
 
     /**
@@ -29,13 +21,21 @@ abstract class App
      */
     public static function pkg()
     {
-        if (!is_object(self::$pkg)) {
-            self::$pkg = c5app()
+        $pkg = null;
+
+        $cache = c5app()->make('cache/request');
+        $item = $cache->getItem(sprintf('/package/handle/%s', static::pkgHandle()));
+        if (!$item->isMiss()) {
+            $pkg = $item->get();
+        } else {
+            $pkg = c5app()
                 ->make('Concrete\Core\Package\PackageService')
                 ->getByHandle(static::pkgHandle());
+
+            $cache->save($item->set($pkg));
         }
 
-        return self::$pkg;
+        return $pkg;
     }
 
     /**
@@ -45,7 +45,7 @@ abstract class App
      */
     public static function config()
     {
-        return self::pkg()->getController()->getConfig();
+        return static::pkg()->getController()->getConfig();
     }
 
     public static function setupAlias()
