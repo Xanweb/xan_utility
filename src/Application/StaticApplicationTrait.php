@@ -5,7 +5,6 @@ use Concrete\Core\Support\Facade\Application;
 
 trait StaticApplicationTrait
 {
-
     /**
      * @param string $make [optional]
      *

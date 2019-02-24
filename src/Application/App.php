@@ -3,7 +3,6 @@ namespace XanUtility\Application;
 
 abstract class App
 {
-
     /**
      * Get current package handle.
      *
@@ -11,7 +10,7 @@ abstract class App
      */
     public static function pkgHandle()
     {
-        throw new \Exception(get_called_class(). ':' . __METHOD__ . ' need to be implemented');
+        throw new \Exception(get_called_class() . ':' . __METHOD__ . ' need to be implemented');
     }
 
     /**

@@ -47,13 +47,13 @@ class AssetProvider
                 [
                     ['vendor-javascript', 'xan/utility'],
                     ['vendor-javascript', 'xan/sitemap'],
-                ]
+                ],
             ]),
             'xan/file-manager' => self::mergeAssets(self::getAssetGroupAssets('core/file-manager'), [
                 [
                     ['vendor-javascript', 'xan/utility'],
                     ['vendor-javascript', 'xan/file-manager'],
-                ]
+                ],
             ]),
             'xan/alert/dialog' => [
                 [
@@ -81,7 +81,8 @@ class AssetProvider
     }
 
     /**
-     * Get AssetGroup Assets
+     * Get AssetGroup Assets.
+     *
      * @param string $assetGroupHandle
      *
      * @return array
@@ -96,8 +97,8 @@ class AssetProvider
         $limit = max(count($assets1), count($assets2));
         $result = [];
 
-        for ($i = 0; $i < $limit; $i++) {
-            if(isset($assets1[$i]) && isset($assets2[$i])) {
+        for ($i = 0; $i < $limit; ++$i) {
+            if (isset($assets1[$i]) && isset($assets2[$i])) {
                 $result[$i] = array_merge($assets1[$i], $assets2[$i]);
             } elseif (isset($assets1[$i])) {
                 $result[$i] = $assets1[$i];

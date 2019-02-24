@@ -13,7 +13,8 @@ use Doctrine\ORM\Query\SqlWalker;
 use Doctrine\ORM\Query\AST\SelectStatement;
 
 /**
- * This is a hack to fix Doctrine 2.5 Sort issue
+ * This is a hack to fix Doctrine 2.5 Sort issue.
+ *
  * @see https://github.com/doctrine/orm/pull/6143
  */
 class LimitSubqueryOutputWalker extends SqlWalker
@@ -90,8 +91,8 @@ class LimitSubqueryOutputWalker extends SqlWalker
         $this->maxResults = $query->getMaxResults();
         $query->setFirstResult(null)->setMaxResults(null);
 
-        $this->em               = $query->getEntityManager();
-        $this->quoteStrategy    = $this->em->getConfiguration()->getQuoteStrategy();
+        $this->em = $query->getEntityManager();
+        $this->quoteStrategy = $this->em->getConfiguration()->getQuoteStrategy();
 
         parent::__construct($query, $parserResult, $queryComponents);
     }
@@ -155,6 +156,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
         if ($this->platformSupportsRowNumber()) {
             return $this->walkSelectStatementWithRowNumber($AST);
         }
+
         return $this->walkSelectStatementWithoutRowNumber($AST);
     }
 
@@ -329,7 +331,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
     }
 
     /**
-     * Generates new SQL for statements with an order by clause
+     * Generates new SQL for statements with an order by clause.
      *
      * @param array              $sqlIdentifier
      * @param string             $innerSql
@@ -345,7 +347,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
         OrderByClause $orderByClause = null
     ) {
         // If the sql statement has an order by clause, we need to wrap it in a new select distinct statement
-        if (! $orderByClause) {
+        if (!$orderByClause) {
             return $sql;
         }
 
@@ -358,7 +360,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
     }
 
     /**
-     * Generates a new SQL statement for the inner query to keep the correct sorting
+     * Generates a new SQL statement for the inner query to keep the correct sorting.
      *
      * @param OrderByClause $orderByClause
      * @param array         $identifiers
@@ -385,9 +387,9 @@ class LimitSubqueryOutputWalker extends SqlWalker
             );
 
             $orderByItems[] = $orderByItemString;
-            $identifier     = \substr($orderByItemString, 0, \strrpos($orderByItemString, ' '));
+            $identifier = \substr($orderByItemString, 0, \strrpos($orderByItemString, ' '));
 
-            if (! \in_array($identifier, $identifiers, true)) {
+            if (!\in_array($identifier, $identifiers, true)) {
                 $identifiers[] = $identifier;
             }
         }
@@ -419,7 +421,7 @@ class LimitSubqueryOutputWalker extends SqlWalker
             $class = $metadataList[$dqlAliasForFieldAlias];
 
             // If the field is from a joined child table, we won't be ordering on it.
-            if (! isset($class->fieldMappings[$fieldName])) {
+            if (!isset($class->fieldMappings[$fieldName])) {
                 continue;
             }
 
@@ -440,21 +442,21 @@ class LimitSubqueryOutputWalker extends SqlWalker
                 // for the joined parent table.
                 $otherClassMetadata = $this->em->getClassMetadata($fieldMapping['declared']);
 
-                if (! $otherClassMetadata->isMappedSuperclass) {
+                if (!$otherClassMetadata->isMappedSuperclass) {
                     $sqlTableAliasForFieldAlias = $this->getSQLTableAlias($otherClassMetadata->getTableName(), $dqlAliasForFieldAlias);
                 }
             }
 
             // Compose search and replace patterns
             $searchPatterns[] = \sprintf(self::ORDER_BY_PATH_EXPRESSION, $sqlTableAliasForFieldAlias, $columnName);
-            $replacements[]   = $fieldAlias;
+            $replacements[] = $fieldAlias;
         }
 
         return [$searchPatterns, $replacements];
     }
 
     /**
-     * getter for $orderByPathExpressions
+     * getter for $orderByPathExpressions.
      *
      * @return array
      */
@@ -511,9 +513,9 @@ class LimitSubqueryOutputWalker extends SqlWalker
             throw new \RuntimeException('Cannot count query which selects two FROM components, cannot make distinction');
         }
 
-        $fromRoot       = reset($from);
-        $rootAlias      = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
-        $rootClass      = $this->queryComponents[$rootAlias]['metadata'];
+        $fromRoot = reset($from);
+        $rootAlias = $fromRoot->rangeVariableDeclaration->aliasIdentificationVariable;
+        $rootClass = $this->queryComponents[$rootAlias]['metadata'];
         $rootIdentifier = $rootClass->identifier;
 
         // For every identifier, find out the SQL alias by combing through the ResultSetMapping
