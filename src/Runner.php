@@ -1,5 +1,4 @@
 <?php
-
 namespace XanUtility;
 
 use Concrete\Core\Foundation\Service\ProviderList;
@@ -12,9 +11,12 @@ class Runner
 
     public static function boot()
     {
-        if(static::$started) {
+        if (static::$started) {
             return;
         }
+
+        $providers = c5app()->make(ProviderList::class);
+        $providers->registerProvider(UtilityProvider::class);
 
         $router = c5app()->make(RouterInterface::class);
         $router->registerMultiple([
@@ -22,9 +24,6 @@ class Runner
         ]);
 
         AssetProvider::register();
-
-        $providers = c5app()->make(ProviderList::class);
-        $providers->registerProvider(UtilityProvider::class);
 
         static::$started = true;
     }

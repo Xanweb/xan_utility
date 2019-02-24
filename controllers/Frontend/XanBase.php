@@ -1,7 +1,6 @@
 <?php
 namespace XanUtility\Controller\Frontend;
 
-use XanUtility\Editor\CkEditor\CompactEditor;
 use Concrete\Core\Foundation\Environment;
 use Concrete\Core\Http\ResponseFactoryInterface;
 use Controller;
@@ -25,7 +24,7 @@ class XanBase extends Controller
             ],
         ], JSON_UNESCAPED_SLASHES) . ';';
 
-        $content = str_replace('"###initCompactEditor###"', CompactEditor::outputEditorInitJSFunction(), $content);
+        $content = str_replace('"###initCompactEditor###"', $this->app['editor/compact']->getEditorInitJSFunction(), $content);
 
         return $this->createJavascriptResponse($content);
     }

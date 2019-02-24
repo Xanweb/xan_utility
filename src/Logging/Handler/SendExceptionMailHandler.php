@@ -12,7 +12,7 @@ class SendExceptionMailHandler extends MailHandler
     /**
      * Email Address where to send Exceptions.
      *
-     * @var String
+     * @var string
      */
     protected $reportEmail;
 
