@@ -4,6 +4,7 @@ namespace XanUtility;
 use Concrete\Core\Foundation\Service\ProviderList;
 use Concrete\Core\Routing\RouterInterface;
 use XanUtility\Controller\Frontend\XanBase;
+use XanUtility\Form\FormServiceProvider;
 
 class Runner
 {
@@ -16,7 +17,10 @@ class Runner
         }
 
         $providers = c5app()->make(ProviderList::class);
-        $providers->registerProvider(UtilityProvider::class);
+        $providers->registerProviders([
+            UtilityProvider::class,
+            FormServiceProvider::class
+        ]);
 
         $router = c5app()->make(RouterInterface::class);
         $router->registerMultiple([
