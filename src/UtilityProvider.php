@@ -1,6 +1,7 @@
 <?php
 namespace XanUtility;
 
+use Concrete\Core\Foundation\ClassAliasList;
 use Concrete\Core\User\User;
 use Concrete\Core\Application\Application;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
@@ -14,9 +15,15 @@ class UtilityProvider extends ServiceProvider
             $this->app->singleton(User::class);
         }
 
+        $classAliasList = ClassAliasList::getInstance();
+        $classAliasList->registerMultiple([
+            'MultilingualSection' => 'Concrete\Core\Multilingual\Page\Section\Section'
+        ]);
+
         $aliases = [
             'user/current' => User::class,
             'database/connection' => 'Concrete\Core\Database\Connection\Connection',
+            'http/request' => 'Concrete\Core\Http\Request',
             'excel/export' => Service\Excel\Export::class,
             'excel/import' => Service\Excel\Import::class,
         ];
