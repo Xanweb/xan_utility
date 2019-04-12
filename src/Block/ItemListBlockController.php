@@ -11,6 +11,8 @@ use Config;
 
 abstract class ItemListBlockController extends CoreBlockController
 {
+    use BlockControllerTrait;
+
     /**
      * @var Connection
      */
@@ -231,6 +233,14 @@ abstract class ItemListBlockController extends CoreBlockController
         return $e;
     }
 
+    /**
+     * Check if the item is valid
+     *
+     * @param int $itemNbr
+     * @param array $item
+     * @param \Concrete\Core\Error\ErrorList\ErrorList $e
+     * @return bool
+     */
     protected function validateItem($itemNbr, $item, $e)
     {
         return true;
