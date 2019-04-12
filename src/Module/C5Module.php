@@ -1,8 +1,14 @@
 <?php
 namespace XanUtility\Module;
 
+use Concrete\Core\Routing\RouteListInterface;
+use Concrete\Core\Foundation\Service\ProviderList;
+use XanUtility\Application\StaticApplicationTrait;
+
 abstract class C5Module
 {
+    use StaticApplicationTrait;
+
     /**
      * Get current package handle.
      *
@@ -47,7 +53,50 @@ abstract class C5Module
         return static::pkg()->getController()->getConfig();
     }
 
-    public static function setupAlias()
+    /**
+     *
+     * @throws \Exception
+     */
+    public static function boot()
+    {
+        static::setupAlias();
+
+        $app = self::app();
+
+        $providers = static::getServiceProviders();
+        if(is_array($providers) && !empty($providers)) {
+            $app->make(ProviderList::class)->registerProviders($providers);
+        }
+
+        $routeListClass = static::getRoutesClass();
+        if(!empty($routeListClass)) {
+            if(is_subclass_of($routeListClass, RouteListInterface::class)) {
+                $app->call("$routeListClass@loadRoutes");
+            } else {
+                throw new \Exception(t(get_called_class() . ':getRoutesClass: RoutesClass should be instanceof \Concrete\Core\Routing\RouteListInterface'));
+            }
+        }
+    }
+
+    /**
+     * Get Service Providers Class Names
+     * @return array
+     */
+    protected static function getServiceProviders()
+    {
+        return [];
+    }
+
+    /**
+     * Get Class name for RouteList, must be instance of \Concrete\Core\Routing\RouteListInterface
+     * @return string
+     */
+    protected static function getRoutesClass()
+    {
+        return;
+    }
+
+    protected static function setupAlias()
     {
         $aliasList = \Concrete\Core\Foundation\ClassAliasList::getInstance();
         $aliasList->register(static::getPackageAlias(), get_called_class());

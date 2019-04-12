@@ -377,7 +377,10 @@ class Installer
         $akCategController = $akCateg->getController();
         $cak = $akCategController->getAttributeKeyByHandle($data['akHandle']);
         if (!is_object($cak)) {
-            return $akCategController->add($atTypeHandle, $data, false, $this->pkg);
+            $settings = isset($data['settings']) ? (array) $data['settings'] : false;
+            unset($data['settings']);
+
+            return $akCategController->add($atTypeHandle, $data, $settings, $this->pkg);
         }
 
         return $cak;
