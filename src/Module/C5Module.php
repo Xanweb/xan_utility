@@ -27,14 +27,14 @@ abstract class C5Module
     public static function pkg()
     {
         $pkg = null;
+        $app = self::app();
 
-        $cache = c5app()->make('cache/request');
+        $cache = $app->make('cache/request');
         $item = $cache->getItem(sprintf('/package/handle/%s', static::pkgHandle()));
         if (!$item->isMiss()) {
             $pkg = $item->get();
         } else {
-            $pkg = c5app()
-                ->make('Concrete\Core\Package\PackageService')
+            $pkg = $app->make('Concrete\Core\Package\PackageService')
                 ->getByHandle(static::pkgHandle());
 
             $cache->save($item->set($pkg));
