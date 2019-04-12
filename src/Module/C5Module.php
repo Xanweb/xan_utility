@@ -54,8 +54,7 @@ abstract class C5Module
     }
 
     /**
-     *
-     * @throws \Exception
+     * Basic Boot for Module
      */
     public static function boot()
     {
