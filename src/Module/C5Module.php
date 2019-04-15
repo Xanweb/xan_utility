@@ -2,27 +2,26 @@
 namespace XanUtility\Module;
 
 use Concrete\Core\Routing\RouteListInterface;
+use Concrete\Core\Foundation\ClassAliasList;
 use Concrete\Core\Foundation\Service\ProviderList;
 use XanUtility\Application\StaticApplicationTrait;
 
-abstract class C5Module
+abstract class C5Module implements Module
 {
     use StaticApplicationTrait;
 
     /**
-     * Get current package handle.
-     *
-     * @return string
+     * Class to be used Statically
      */
-    public static function pkgHandle()
+    private function __construct()
     {
-        throw new \Exception(get_called_class() . ':' . __METHOD__ . ' need to be implemented');
+         return false;
     }
 
     /**
-     * Get current package object.
+     * {@inheritdoc}
      *
-     * @return \Concrete\Core\Entity\Package
+     * @see Module::pkg()
      */
     public static function pkg()
     {
@@ -44,9 +43,9 @@ abstract class C5Module
     }
 
     /**
-     * Get Package Database Config.
+     * {@inheritdoc}
      *
-     * @return \Concrete\Core\Config\Repository\Liaison
+     * @see Module::config()
      */
     public static function config()
     {
@@ -54,14 +53,19 @@ abstract class C5Module
     }
 
     /**
-     * Basic Boot for Module
+     * {@inheritdoc}
+     *
+     * @see Module::boot()
      */
     public static function boot()
     {
-        static::setupAlias();
+        $aliases = static::getClassAliases();
+        if(!empty($aliases)) {
+            $aliasList = ClassAliasList::getInstance();
+            $aliasList->registerMultiple($aliases);
+        }
 
         $app = self::app();
-
         $providers = static::getServiceProviders();
         if(is_array($providers) && !empty($providers)) {
             $app->make(ProviderList::class)->registerProviders($providers);
@@ -75,6 +79,26 @@ abstract class C5Module
                 throw new \Exception(t(get_called_class() . ':getRoutesClass: RoutesClass should be instanceof \Concrete\Core\Routing\RouteListInterface'));
             }
         }
+    }
+
+    /**
+     * Classes to be registered as aliases in \Concrete\Core\Foundation\ClassAliasList
+     * @return array
+     */
+    protected static function getClassAliases()
+    {
+        return [
+            static::getPackageAlias() => get_called_class()
+        ];
+    }
+
+    /**
+     * Get Package Alias
+     * @return string
+     */
+    protected static function getPackageAlias()
+    {
+        return camelcase(static::pkgHandle());
     }
 
     /**
@@ -93,16 +117,5 @@ abstract class C5Module
     protected static function getRoutesClass()
     {
         return;
-    }
-
-    protected static function setupAlias()
-    {
-        $aliasList = \Concrete\Core\Foundation\ClassAliasList::getInstance();
-        $aliasList->register(static::getPackageAlias(), get_called_class());
-    }
-
-    protected static function getPackageAlias()
-    {
-        return camelcase(static::pkgHandle());
     }
 }
