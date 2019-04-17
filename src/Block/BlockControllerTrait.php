@@ -29,13 +29,17 @@ trait BlockControllerTrait
                         foreach ($data->record->children() as $node) {
                             $fieldName = $this->getDBTableFieldMapping((string) $data['table'], $node->getName());
                             if ($fieldName) {
+                                $isWYSIWYG = false;
                                 $migrator = false;
                                 if (is_array($fieldName)) {
-                                    list($fieldName, $migrator) = $fieldName;
+                                    $migrator = array_get($fieldName, 'migrator', false);
+                                    $isWYSIWYG = array_get($fieldName, 'isWYSIWYG', false);
+                                    $fieldName = array_get($fieldName, 'new_name', (string) $node->getName());
                                 }
 
                                 $result = $inspector->inspect((string) $node);
-                                $args[$fieldName] = $migrator ? $this->app->call($migrator, [$this->app, $result->getReplacedValue()]) : $result->getReplacedValue();
+                                $replacedValue = $isWYSIWYG ? $result->getReplacedContent() : $result->getReplacedValue();
+                                $args[$fieldName] = $migrator ? $this->app->call($migrator, [$replacedValue]) : $replacedValue;
 
                                 if (isset($columns[$fieldName])) {
                                     $args[$fieldName] = PrimitiveFieldMigrator::sanitizeFieldValue($columns[$fieldName]->getType()->getName(), $args[$fieldName]);
