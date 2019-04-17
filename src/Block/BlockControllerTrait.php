@@ -78,13 +78,17 @@ trait BlockControllerTrait
                                     continue;
                                 }
 
+                                $isWYSIWYG = false;
                                 $migrator = false;
                                 if (is_array($fieldName)) {
-                                    list($fieldName, $migrator) = $fieldName;
+                                    $migrator = array_get($fieldName, 'migrator', false);
+                                    $isWYSIWYG = array_get($fieldName, 'isWYSIWYG', false);
+                                    $fieldName = array_get($fieldName, 'new_name', (string) $node->getName());
                                 }
 
                                 $result = $inspector->inspect((string) $node);
-                                $aar->{$fieldName} = $migrator ? $this->app->call($migrator, [$this->app, $result->getReplacedValue()]) : $result->getReplacedValue();
+                                $replacedValue = $isWYSIWYG ? $result->getReplacedContent() : $result->getReplacedValue();
+                                $aar->{$fieldName} = $migrator ? $this->app->call($migrator, [$replacedValue]) : $replacedValue;
 
                                 if (isset($columns[$fieldName])) {
                                     $aar->{$fieldName} = PrimitiveFieldMigrator::sanitizeFieldValue($columns[$fieldName]->getType()->getName(), $aar->{$fieldName});
