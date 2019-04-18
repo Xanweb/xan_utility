@@ -10,18 +10,25 @@ use XanUtility\Block\Migrator\PrimitiveField as PrimitiveFieldMigrator;
 
 trait BlockControllerTrait
 {
+    protected $uniqID;
+
     /**
      * Get Uniq Identifier for Block
      * @return string
      */
-    public function getBlockUniqueId()
+    public function getUniqueId()
     {
-        $b = $this->getBlockObject();
-        if (is_object($b) && $b->getProxyBlock()) {
-            return strtolower($b->getProxyBlock()->getInstance()->getIdentifier());
+        if(!$this->uniqID) {
+            $prefix = strtolower($this->getIdentifier());
+            $b = $this->getBlockObject();
+            if (is_object($b) && $b->getProxyBlock()) {
+                $prefix = strtolower($b->getProxyBlock()->getInstance()->getIdentifier());
+            }
+
+            $this->uniqID = $prefix . $this->app['helper/validation/identifier']->getString(4);
         }
 
-        return strtolower($this->getIdentifier());
+        return $this->uniqID;
     }
 
     protected function getImportData($blockNode, $page)
