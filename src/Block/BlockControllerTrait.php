@@ -10,6 +10,20 @@ use XanUtility\Block\Migrator\PrimitiveField as PrimitiveFieldMigrator;
 
 trait BlockControllerTrait
 {
+    /**
+     * Get Uniq Identifier for Block
+     * @return string
+     */
+    public function getBlockUniqueId()
+    {
+        $b = $this->getBlockObject();
+        if (is_object($b) && $b->getProxyBlock()) {
+            return strtolower($b->getProxyBlock()->getInstance()->getIdentifier());
+        }
+
+        return strtolower($this->getIdentifier());
+    }
+
     protected function getImportData($blockNode, $page)
     {
         $args = [];
