@@ -100,10 +100,9 @@ class Installer
         $sp = Page::getByPath($path);
         if (!is_object($sp) || COLLECTION_NOT_FOUND === $sp->getError()) {
             $sp = SinglePage::add($path, $this->pkg);
-            $sp->update([
-                'cName' => $name,
-            ]);
         }
+
+        $sp->update(['cName' => $name]);
 
         foreach ($options as $key => $value) {
             $sp->setAttribute($key, $value);
