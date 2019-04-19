@@ -2,6 +2,7 @@
 namespace XanUtility;
 
 use Concrete\Core\Asset\AssetList;
+use Concrete\Core\Asset\AssetPointer;
 use XanUtility\Asset\UtilityAssetList;
 
 class AssetProvider
@@ -76,6 +77,11 @@ class AssetProvider
                 ],
             ],
         ]);
+
+        // Override Core/Sitemap
+        $assetGrp = $al->getAssetGroup('core/sitemap');
+        $assetGrp->add(new AssetPointer('vendor-javascript', 'xan/utility'));
+        $assetGrp->add(new AssetPointer('vendor-javascript', 'xan/sitemap'));
 
         self::$alreadyRegistered = true;
     }
