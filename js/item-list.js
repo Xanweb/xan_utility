@@ -147,7 +147,7 @@
         initFileSelectors: function ($item) {
             var my = this;
             $item.find('div[data-field=file-selector]').each(function(){
-                $(this).concreteFileSelector({
+                $(this).xanFileSelector({
                     inputName: $(this).data('name'),
                     fID: parseInt($(this).data('value')),
                     onChange: my.options.onSelectFile
