@@ -335,12 +335,12 @@ abstract class ItemListBlockController extends CoreBlockController
      *
      * @param array $sort ['col1' => 'ASC', 'col2' => 'DESC']
      *
-     * @return Collection
+     * @return array
      */
     public function getItems(array $sort = [])
     {
         if (!$this->items) {
-            return Collection::make([]);
+            return [];
         }
 
         if (!empty($sort)) {
@@ -350,10 +350,10 @@ abstract class ItemListBlockController extends CoreBlockController
                 $sortedItems = $sortedItems->sortBy($col, SORT_REGULAR, strtoupper($dir) == 'DESC');
             }
 
-            return $sortedItems;
+            return array_values($sortedItems->toArray());
         }
 
-        return $this->items;
+        return array_values($this->items->toArray());
     }
 
     /**
