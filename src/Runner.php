@@ -1,10 +1,8 @@
 <?php
 namespace XanUtility;
 
-use Concrete\Core\Routing\RouterInterface;
 use Concrete\Core\Foundation\Service\ProviderList;
 use XanUtility\Application\StaticApplicationTrait;
-use XanUtility\Controller\Frontend\XanBase;
 use XanUtility\Form\FormServiceProvider;
 
 class Runner
@@ -26,10 +24,7 @@ class Runner
             FormServiceProvider::class
         ]);
 
-        $router = $app->make(RouterInterface::class);
-        $router->registerMultiple([
-            '/js/xan/utility/global.js' => [XanBase::class . '::getJavascript'],
-        ]);
+        $app->call('XanUtility\Route\RouteList@loadRoutes');
 
         AssetProvider::register();
 
