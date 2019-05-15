@@ -222,7 +222,7 @@ trait BlockControllerTrait
         }
 
         $c = Page::getCurrentPage();
-        if ($c instanceof Page && !$c->isError() && !$c->isMasterCollection()) {
+        if ($c instanceof Page && !$c->isError()) {
             return $c;
         }
 
