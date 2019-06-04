@@ -336,3 +336,46 @@ if (!function_exists('get_theme_path')) {
         return $themePath;
     }
 }
+
+if (!function_exists('get_active_language')) {
+    /**
+     * Get Active Site Language en|de...
+     *
+     * @return string
+     */
+    function get_active_language()
+    {
+        return current(explode('_', get_active_locale()));
+    }
+}
+
+if (!function_exists('get_active_locale')) {
+    /**
+     * Get Active Site Locale en_US|de_DE...
+     *
+     * @return string
+     */
+    function get_active_locale()
+    {
+        $section = \MultilingualSection::getCurrentSection();
+
+        if(is_object($section)) {
+            return $section->getLocale();
+        }
+
+        return \Localization::activeLocale();
+    }
+}
+
+if (!function_exists('getRandomItemByInterval')) {
+
+    function getRandomItemByInterval($timeBase, $array)
+    {
+        // By using the modulus operator we get a pseudo
+        // random index position that is between zero and the
+        // maximal value (ItemsCount)
+        $randomIndexPos = (((int)$timeBase) % count($array));
+
+        return $array[$randomIndexPos];
+    }
+}
