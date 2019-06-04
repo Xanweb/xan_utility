@@ -2,6 +2,7 @@
 namespace XanUtility;
 
 use Concrete\Core\Foundation\Service\ProviderList;
+use XanUtility\Migration\ServiceProvider as MigrationServiceProvider;
 use XanUtility\Application\StaticApplicationTrait;
 use XanUtility\Form\FormServiceProvider;
 
@@ -21,7 +22,8 @@ class Runner
         $providers = $app->make(ProviderList::class);
         $providers->registerProviders([
             UtilityProvider::class,
-            FormServiceProvider::class
+            FormServiceProvider::class,
+            MigrationServiceProvider::class,
         ]);
 
         $app->call('XanUtility\Route\RouteList@loadRoutes');
