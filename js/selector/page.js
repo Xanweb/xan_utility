@@ -14,10 +14,13 @@
         var my = this;
         my.$element.html(my._loadingTemplate({'options': my.options, 'cID': cID}));
         ConcretePageAjaxSearch.getPageDetails(cID, function (r) {
-            if(!r.pages){
-                return;
+            var page;
+            if(r.pages){
+                page = r.pages[0];
+            } else {
+                page = {'cID': cID, 'name': '<span class="text-danger">' + global.ccm_xan.i18n.pageNotFound + '</span>', 'url': global.ccm_xan.i18n.pageNotFound};
             }
-            var page = r.pages[0];
+
             my.$element.html(my._pageLoadedTemplate({'inputName': my.options.inputName, 'page': page}));
             var tooltips = my.$element.find('.launch-tooltip');
             if (tooltips.length && tooltips.tooltip) {
