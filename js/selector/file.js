@@ -33,6 +33,8 @@
         });
     };
 
+    $.fn.concreteFileSelector = $.fn.xanFileSelector;
+
     global.XanFileSelector = XanFileSelector;
     
 }(window, $);     

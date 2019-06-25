@@ -46,12 +46,14 @@ class AssetProvider
             ],
             'xan/sitemap' => self::mergeAssets(self::getAssetGroupAssets('core/sitemap'), [
                 [
+                    ['javascript-localized', 'xan/utility/global'],
                     ['vendor-javascript', 'xan/utility'],
                     ['vendor-javascript', 'xan/sitemap'],
                 ],
             ]),
             'xan/file-manager' => self::mergeAssets(self::getAssetGroupAssets('core/file-manager'), [
                 [
+                    ['javascript-localized', 'xan/utility/global'],
                     ['vendor-javascript', 'xan/utility'],
                     ['vendor-javascript', 'xan/file-manager'],
                 ],
@@ -74,14 +76,21 @@ class AssetProvider
                     ['javascript-localized', 'core/localization'],
                     ['javascript', 'core/app'],
                     ['vendor-javascript', 'xan/alert/dialog'],
+                    ['javascript-localized', 'xan/utility/global'],
                 ],
             ],
         ]);
 
         // Override Core/Sitemap
         $assetGrp = $al->getAssetGroup('core/sitemap');
+        $assetGrp->add(new AssetPointer('javascript-localized', 'xan/utility/global'));
         $assetGrp->add(new AssetPointer('vendor-javascript', 'xan/utility'));
         $assetGrp->add(new AssetPointer('vendor-javascript', 'xan/sitemap'));
+
+        $assetGrp = $al->getAssetGroup('core/file-manager');
+        $assetGrp->add(new AssetPointer('javascript-localized', 'xan/utility/global'));
+        $assetGrp->add(new AssetPointer('vendor-javascript', 'xan/utility'));
+        $assetGrp->add(new AssetPointer('vendor-javascript', 'xan/file-manager'));
 
         self::$alreadyRegistered = true;
     }

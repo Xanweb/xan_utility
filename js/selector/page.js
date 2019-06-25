@@ -48,6 +48,9 @@
             new XanPageSelector($(this), options);
         });
     };
+
+    $.fn.concretePageSelector = $.fn.xanPageSelector;
+
     global.XanPageSelector = XanPageSelector;
     
 }(window, $);     
