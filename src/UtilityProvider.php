@@ -1,9 +1,9 @@
 <?php
 namespace XanUtility;
 
-use Concrete\Core\Foundation\ClassAliasList;
 use Concrete\Core\User\User;
 use Concrete\Core\Application\Application;
+use Concrete\Core\Foundation\ClassAliasList;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
 use XanUtility\Editor\CkEditor\Editor;
 
@@ -22,15 +22,19 @@ class UtilityProvider extends ServiceProvider
 
         $aliases = [
             'user/current' => User::class,
-            'database/connection' => 'Concrete\Core\Database\Connection\Connection',
             'http/request' => 'Concrete\Core\Http\Request',
-            'excel/export' => Service\Excel\Export::class,
-            'excel/import' => Service\Excel\Import::class,
+            'excel/export' => 'XanUtility\Service\Excel\Service\Excel\Export',
+            'excel/import' => 'XanUtility\Service\Excel\Service\Excel\Import',
+            'database/connection' => 'Concrete\Core\Database\Connection\Connection',
         ];
 
         foreach ($aliases as $alias => $class) {
             $this->app->alias($class, $alias);
         }
+
+        $this->app->bind('site/active', function (Application $app) {
+            return $app->make('site')->getSite();
+        });
 
         $this->app->singleton('editor/compact', function (Application $app) {
             $editor = $app->make(Editor::class);
