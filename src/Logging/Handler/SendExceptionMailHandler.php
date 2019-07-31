@@ -1,11 +1,11 @@
 <?php
 namespace XanUtility\Logging\Handler;
 
+use Concrete\Core\User\User;
 use Concrete\Core\Support\Facade\Facade;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Handler\MailHandler;
 use Monolog\Logger;
-use User;
 
 class SendExceptionMailHandler extends MailHandler
 {
@@ -31,16 +31,16 @@ class SendExceptionMailHandler extends MailHandler
     protected function send($content, array $records)
     {
         $app = Facade::getFacadeApplication();
-
         $u = $app->make(User::class);
         $user = t('User: %s', $u->isRegistered() ? $u->getUserName() : t('Guest'));
 
+        $refererURL = t('Referer URL: %s', $_SERVER['HTTP_REFERER']);
         $url = (isset($_SERVER['HTTPS']) ? 'https' : 'http') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 
         $mh = $app->make('mail');
         $mh->setTesting(true);
         $mh->setSubject($_SERVER['SERVER_NAME'] . ': Exception occurred');
-        $mh->setBodyHTML($user . '<br>' . $url . '<br>' . $content);
+        $mh->setBodyHTML($user . '<br>' . $url . '<br>' . $refererURL . '<br>' . $content);
         $mh->to($this->reportEmail);
         try {
             $mh->sendMail();
