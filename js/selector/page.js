@@ -13,7 +13,7 @@
     XanPageSelector.prototype.loadPage = function (cID) {
         var my = this;
         my.$element.html(my._loadingTemplate({'options': my.options, 'cID': cID}));
-        ConcretePageAjaxSearch.getPageDetails(cID, function (r) {
+        var callback = function (r) {
             var page;
             if(r.pages){
                 page = r.pages[0];
@@ -38,6 +38,19 @@
 
             if(my.options.onChange) {
                 my.options.onChange(my.$element, r);
+            }
+        };
+
+        $.ajax({
+            type: 'post',
+            dataType: 'json',
+            url: CCM_DISPATCHER_FILENAME + '/ccm/system/page/get_json',
+            data: {'cID': cID},
+            error: function(r) {
+                callback(r);
+            },
+            success: function(r) {
+                callback(r);
             }
         });
     };
