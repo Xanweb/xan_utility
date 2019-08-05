@@ -18,7 +18,7 @@
             if(r.pages){
                 page = r.pages[0];
             } else {
-                page = {'cID': cID, 'name': '<span class="text-danger">' + global.ccm_xan.i18n.pageNotFound + '</span>', 'url': global.ccm_xan.i18n.pageNotFound};
+                page = {'cID': cID, 'name': '<span class="text-danger">' + global.ccm_xan.i18n.pageNotFound + ' (ID: ' + cID + ')</span>', 'url': global.ccm_xan.i18n.pageNotFound};
             }
 
             my.$element.html(my._pageLoadedTemplate({'inputName': my.options.inputName, 'page': page}));
