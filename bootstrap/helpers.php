@@ -322,7 +322,6 @@ if (!function_exists('get_theme_path')) {
     /**
      * Get theme relative path.
      *
-     *
      * @return string
      */
     function get_theme_path()

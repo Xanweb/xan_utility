@@ -13,6 +13,7 @@ class RouteList implements RouteListInterface
             ->setNamespace('XanUtility\Controller\Frontend')
             ->routes(function (Router $r) {
                 $r->get('/js/xan/utility/global.js', 'XanBase::getJavascript');
+                $r->all('/xan/utility/file/info/get_json', 'FileInfo::getJSON');
             });
     }
 }

@@ -1,7 +1,6 @@
 <?php
 namespace XanUtility\Controller\Frontend;
 
-use Concrete\Core\Foundation\Environment;
 use Concrete\Core\Http\ResponseFactoryInterface;
 use Controller;
 use PageTheme;
@@ -39,7 +38,7 @@ class XanBase extends Controller
     {
         $theme = PageTheme::getSiteTheme();
 
-        return $this->app->make(Environment::class)->getURL(DIRNAME_THEMES . '/' . $theme->getThemeHandle(), $theme->getPackageHandle());
+        return $this->app->make('environment')->getURL(DIRNAME_THEMES . '/' . $theme->getThemeHandle(), $theme->getPackageHandle());
     }
 
     /**
