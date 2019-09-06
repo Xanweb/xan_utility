@@ -42,7 +42,7 @@ class FileInfo extends Controller
         }
 
         $file = null;
-        $fID = $this->app['security']->sanitizeInt($this->request->get('fID'));
+        $fID = $this->app['helper/security']->sanitizeInt($this->request->get('fID'));
         if ($fID) {
             $file = ConcreteFile::getByID($fID);
         }
