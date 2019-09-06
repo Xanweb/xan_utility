@@ -1,6 +1,7 @@
 <?php
 namespace XanUtility\Controller\Frontend;
 
+use Concrete\Core\Url\Resolver\Manager\ResolverManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Concrete\Core\Entity\File\File as FileEntity;
 use Concrete\Core\Error\UserMessageException;
@@ -73,7 +74,12 @@ class FileInfo extends Controller
             $allowedProperties = $this->getAllowedFileProperties();
             foreach ((array) $properties as $field) {
                 if (isset($allowedProperties[$field])) {
-                    $attrValue = $fv->{$allowedProperties[$field]}();
+                    if ($allowedProperties[$field] instanceof \Closure) {
+                        $attrValue = call_user_func($allowedProperties[$field], $fv);
+                    } else {
+                        $attrValue = $fv->{$allowedProperties[$field]}();
+                    }
+
                     $result['properties'][$field] = $attrValue ?: '';
                 } else {
                     throw new UserMessageException(t('Unsupported File Property: "%s".', $field));
@@ -97,11 +103,18 @@ class FileInfo extends Controller
 
     private function getAllowedFileProperties()
     {
+        $urlResolver = $this->app->make(ResolverManagerInterface::class);
         return [
             'title' => 'getTitle',
             'description' => 'getDescription',
             'formatted_size' => 'getSize',
             'size' => 'getFullSize',
+            'urlInline' => function ($fv) use ($urlResolver) {
+                return (string) $urlResolver->resolve(['/download_file', 'view_inline', $fv->getFileID()]);
+            },
+            'urlDownload' => function ($fv) use ($urlResolver) {
+                return (string) $urlResolver->resolve(['/download_file', 'view', $fv->getFileID()]);
+            },
         ];
     }
 }
