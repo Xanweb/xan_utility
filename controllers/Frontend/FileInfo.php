@@ -90,7 +90,7 @@ class FileInfo extends Controller
             foreach ((array) $attributes as $field) {
                 $ak = $fakc->getAttributeKeyByHandle((string) $field);
                 if (is_object($ak)) {
-                    $attrValue = $fv->getAttribute($ak);
+                    $attrValue = (string) $fv->getAttribute($ak, 'display');
                     $result['attributes'][$field] = $attrValue ?: '';
                 } else {
                     \Log::warn(t('XanUtility::FileInfoController: Undefined File Attribute Key "%s".', $field));
