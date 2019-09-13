@@ -5,6 +5,7 @@ use Concrete\Core\User\User;
 use Concrete\Core\Application\Application;
 use Concrete\Core\Foundation\ClassAliasList;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
+use XanUtility\Console\Command\TranslatePackageExceptCoreTranslationsCommand;
 use XanUtility\Editor\CkEditor\Editor;
 
 class UtilityProvider extends ServiceProvider
@@ -34,6 +35,11 @@ class UtilityProvider extends ServiceProvider
 
         $this->app->bind('site/active', function (Application $app) {
             return $app->make('site')->getSite();
+        });
+
+        $app = $this->app;
+        $this->app['director']->addListener('on_before_console_run', function () use ($app) {
+            $app['console']->add($app->make(TranslatePackageExceptCoreTranslationsCommand::class));
         });
 
         $this->app->singleton('editor/compact', function (Application $app) {
