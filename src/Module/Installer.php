@@ -362,24 +362,42 @@ class Installer
      * Install AttributeKey if not Exists.
      *
      * @param \Concrete\Core\Entity\Attribute\Category|string $akCateg AttributeKeyCategory object or handle
-     * @param string $atTypeHandle
+     * @param \Concrete\Core\Entity\Attribute\Type|string $type
      * @param array $data
      *
      * @return \Concrete\Core\Entity\Attribute\Key\Key return installed attribute key
      */
-    public function installAttributeKey($akCateg, $atTypeHandle, $data)
+    public function installAttributeKey($akCateg, $type, $data)
     {
         if (is_string($akCateg)) {
             $akCateg = $this->app()->make(CategoryService::class)->getByHandle($akCateg);
         }
 
+        if (is_string($type)) {
+            $type = $this->app->make(TypeFactory::class)->getByHandle($type);
+        }
+
         $akCategController = $akCateg->getController();
         $cak = $akCategController->getAttributeKeyByHandle($data['akHandle']);
         if (!is_object($cak)) {
-            $settings = isset($data['settings']) ? (array) $data['settings'] : false;
-            unset($data['settings']);
+            $key = $akCategController->createAttributeKey();
+            $key->setAttributeKeyHandle($data['akHandle']);
+            $key->setAttributeKeyName($data['akName']);
 
-            return $akCategController->add($atTypeHandle, $data, $settings, $this->pkg);
+            $akSettings = null;
+            if (isset($data['settings'])) {
+                if (isset($data['settings']['akIsSearchableIndexed'])) {
+                    $key->setIsAttributeKeyContentIndexed((bool) $data['settings']['akIsSearchableIndexed']);
+                }
+
+                if (isset($data['settings']['akIsSearchable'])) {
+                    $key->setIsAttributeKeyInternal((bool) $data['settings']['akIsSearchable']);
+                }
+
+                $akSettings = $type->getController()->saveKey($data['settings']);
+            }
+
+            return $akCategController->add($type, $key, $akSettings, $this->pkg);
         }
 
         return $cak;
