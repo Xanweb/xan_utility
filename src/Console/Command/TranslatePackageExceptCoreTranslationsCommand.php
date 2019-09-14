@@ -29,6 +29,7 @@ class TranslatePackageExceptCoreTranslationsCommand extends Command
         ->addEnvOption()
         ->setCanRunAsRoot(false)
         ->addOption('locale', 'l', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'List of locale codes to handle')
+        ->addOption('include-application', 'a', InputOption::VALUE_NONE, 'Specify this option to include application folder')
         ->addOption('contact', 'c', InputOption::VALUE_REQUIRED, 'Contact information to be put in the language files to report bugs to (eg the "Report-Msgid-Bugs-To" gettext header)', '')
         ->addOption('translator', 't', InputOption::VALUE_REQUIRED, 'Translator to be put in the language files (eg the "Last-Translator" gettext header)', '')
         ->addOption('exclude-3rdparty', 'x', InputOption::VALUE_NONE, 'Specify this option to avoid parsing 3rd party folders')
@@ -39,11 +40,11 @@ If the locale option(s) is not specified, we'll generate/update translations for
 If currently no locale is defined, we'll generate/update translations for all the currently installed locales of the core of concrete5.
 In order to don't generate the locale files but only the master translations file (.pot), specify "--locale=-" (or "-l-")
 Examples:
-    concrete5 c5:package-translate package_handle
-    concrete5 c5:package-translate package_handle --locale=it_IT --locale=de_DE --fill
-    concrete5 c5:package-translate package_handle -l it_IT -l de_DE
-    concrete5 c5:package-translate package_handle --locale=-
-    concrete5 c5:package-translate path/to/a/package/directory -l-
+    concrete5 c5:package-translate-except-core package_handle
+    concrete5 c5:package-translate-except-core package_handle --locale=it_IT --locale=de_DE --fill
+    concrete5 c5:package-translate-except-core package_handle -l it_IT -l de_DE
+    concrete5 c5:package-translate-except-core package_handle --locale=-
+    concrete5 c5:package-translate-except-core path/to/a/package/directory -l-
             
 Please remark that this command can also parse legacy (pre-5.7) packages.
             
@@ -137,6 +138,8 @@ EOT
                 $locales[] = implode('_', $chunks);
             }
         }
+
+        $includeAppFolder = $input->getOption('include-application');
         
         // Initialize the master translations file (.pot)
         $pot = new Translations();
@@ -157,6 +160,15 @@ EOT
                     false,
                     $input->getOption('exclude-3rdparty')
                     );
+                if ($includeAppDir) {
+                    $parser->parseDirectory(
+                    DIR_APPLICATION,
+                    DIRNAME_APPLICATION,
+                    $pot,
+                    false,
+                    $input->getOption('exclude-3rdparty')
+                    );
+                }
                 $output->writeln('<info>done.</info>');
             }
         }
