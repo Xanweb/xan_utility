@@ -6,13 +6,12 @@ use Concrete\Core\Localization\Localization;
 use Concrete\Core\Localization\Translation\Remote\ProviderInterface as RemoteTranslationProvider;
 use Concrete\Core\Package\PackageService;
 use Concrete\Core\Support\Facade\Application;
-use Exception;
-use Gettext\Translations;
-use Package;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Gettext\Translations;
+use Exception;
 
 class TranslatePackageExceptCoreTranslationsCommand extends Command
 {
@@ -140,6 +139,7 @@ EOT
         }
 
         $includeAppFolder = $input->getOption('include-application');
+        $exclude3rdParty = $input->getOption('exclude-3rdparty');
         
         // Initialize the master translations file (.pot)
         $pot = new Translations();
@@ -158,15 +158,15 @@ EOT
                     "packages/$packageHandle",
                     $pot,
                     false,
-                    $input->getOption('exclude-3rdparty')
+                    $exclude3rdParty
                     );
-                if ($includeAppDir) {
+                if ($includeAppFolder) {
                     $parser->parseDirectory(
                     DIR_APPLICATION,
                     DIRNAME_APPLICATION,
                     $pot,
                     false,
-                    $input->getOption('exclude-3rdparty')
+                    $exclude3rdParty
                     );
                 }
                 $output->writeln('<info>done.</info>');
