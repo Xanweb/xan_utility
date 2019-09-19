@@ -73,8 +73,14 @@
             return $newItem;
         },
         setupItemHeaderAction: function() {
-            this.$container.on('click', '.ccm-item-entry > .panel-heading', function () {
-                $(this).parent().find(".panel-body").toggle();
+            var my = this;
+            var headerActionOn = (my.options.editBtn !== undefined) ? my.options.editBtn : '.ccm-item-entry > .panel-heading';
+            my.$container.on('click', headerActionOn, function () {
+                if (my.options.editBtn !== undefined) {
+                    $(this).closest('.panel-heading').parent().find('.panel-body').toggle();
+                }else{
+                    $(this).parent().find('.panel-body').toggle();
+                }
             });
         },
         setupDeleteItemAction: function(){
