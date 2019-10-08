@@ -1,15 +1,12 @@
 <?php
 namespace XanUtility;
 
-use Concrete\Core\Foundation\Service\ProviderList;
-use XanUtility\Migration\ServiceProvider as MigrationServiceProvider;
-use XanUtility\Application\StaticApplicationTrait;
+use XanUtility\Application\C5Runner;
 use XanUtility\Form\FormServiceProvider;
+use XanUtility\Migration\ServiceProvider as MigrationServiceProvider;
 
-class Runner
+class Runner extends C5Runner
 {
-    use StaticApplicationTrait;
-
     protected static $started = false;
 
     public static function boot()
@@ -18,18 +15,30 @@ class Runner
             return;
         }
 
-        $app = self::app();
-        $providers = $app->make(ProviderList::class);
-        $providers->registerProviders([
-            UtilityProvider::class,
-            FormServiceProvider::class,
-            MigrationServiceProvider::class,
-        ]);
-
-        $app->call('XanUtility\Route\RouteList@loadRoutes');
+        parent::boot();
 
         AssetProvider::register();
 
         static::$started = true;
+    }
+
+    /**
+     * @return array
+     */
+    protected static function getServiceProviders()
+    {
+        return [
+            UtilityProvider::class,
+            FormServiceProvider::class,
+            MigrationServiceProvider::class,
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected static function getRoutesClasses()
+    {
+        return ['XanUtility\Route\RouteList'];
     }
 }
