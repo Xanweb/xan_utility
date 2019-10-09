@@ -1,6 +1,8 @@
 <?php defined('C5_EXECUTE') or die('Access Denied.');
 
 use XanUtility\Helper\Str;
+use XanUtility\Helper\Arr;
+use XanUtility\Helper\Path;
 
 if (!function_exists('mergeSiteConfig')) {
     /**
@@ -63,20 +65,13 @@ if (!function_exists('absolute_path')) {
     /**
      * Get absolute path from relative.
      *
-     * @param  string $relPath  relative path
+     * @param string $relativePath relative path
      *
      * @return string
      */
-    function absolute_path($relPath)
+    function absolute_path($relativePath)
     {
-        if (is_absolute_path($relPath)) {
-            return $relPath;
-        }
-        if (!starts_with($relPath, ['/', '\\'])) {
-            $relPath = DIRECTORY_SEPARATOR . $relPath;
-        }
-
-        return DIR_BASE . $relPath;
+        return Path::getAbsolutePath($relativePath);
     }
 }
 
@@ -84,13 +79,13 @@ if (!function_exists('is_absolute_path')) {
     /**
      * Check if path is absolute.
      *
-     * @param  string $path
+     * @param string $path
      *
      * @return string
      */
     function is_absolute_path($path)
     {
-        return strpos($path, DIR_BASE) !== false;
+        return Path::isAbsolutePath($path);
     }
 }
 
@@ -223,11 +218,7 @@ if (!function_exists('array_key_first')) {
      */
     function array_key_first(array $array)
     {
-        foreach ($array as $key => $unused) {
-            return $key;
-        }
-
-        return null;
+        return Arr::firstKey($array);
     }
 }
 
@@ -241,6 +232,6 @@ if (!function_exists('array_key_last')) {
      */
     function array_key_last(array $array)
     {
-        return (!empty($array)) ? array_keys($array)[count($array) - 1] : null;
+        return Arr::lastKey($array);
     }
 }
