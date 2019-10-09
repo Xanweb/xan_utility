@@ -6,9 +6,12 @@ use Concrete\Core\Support\Facade\Facade;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Handler\MailHandler;
 use Monolog\Logger;
+use Config;
 
 class SendExceptionMailHandler extends MailHandler
 {
+    const MAX_EMAILS_PER_HOUR = 10;
+
     /**
      * Email Address where to send Exceptions.
      *
@@ -30,6 +33,10 @@ class SendExceptionMailHandler extends MailHandler
 
     protected function send($content, array $records)
     {
+        if (!$this->canSend()) {
+            return;
+        }
+
         $app = Facade::getFacadeApplication();
         $u = $app->make(User::class);
         $user = t('User: %s', $u->isRegistered() ? $u->getUserName() : t('Guest'));
@@ -46,5 +53,31 @@ class SendExceptionMailHandler extends MailHandler
             $mh->sendMail();
         } catch (\Exception $e) {
         }
+    }
+
+    /**
+     * Check if limit is reached per hour.
+     *
+     * @return bool
+     */
+    protected function canSend()
+    {
+        $hourStamp = (int) Config::get('concrete.xanweb.email_logging.hour_stamp', 0);
+        $diff = time() - $hourStamp;
+        if ($diff > 3600) {
+            Config::save('concrete.xanweb.email_logging.hour_stamp', time());
+            Config::save('concrete.xanweb.email_logging.count', 1);
+
+            return true;
+        } else {
+            $sentLogCount = Config::get('concrete.xanweb.email_logging.count', 0);
+            if ($sentLogCount < static::MAX_EMAILS_PER_HOUR) {
+                Config::save('concrete.xanweb.email_logging.count', ++$sentLogCount);
+
+                return true;
+            }
+        }
+
+        return false;
     }
 }
