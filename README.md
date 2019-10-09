@@ -1,5 +1,4 @@
 # XanUtility for Concrete5
-[![Build Status](https://travis-ci.org/Xanweb/xan_utility.svg?branch=master)](https://travis-ci.org/Xanweb/xan_utility)
 [![](https://img.shields.io/github/license/xanweb/xan_utility.svg)](https://github.com/xanweb/xan_utility/blob/master/LICENSE)
 [![](https://img.shields.io/packagist/v/xanweb/xan_utility.svg)](https://packagist.org/packages/xanweb/xan_utility)
 
