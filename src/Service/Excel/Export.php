@@ -1,6 +1,7 @@
 <?php
 namespace XanUtility\Service\Excel;
 
+use Concrete\Core\User\User;
 use Concrete\Core\Application\Application;
 use PhpOffice\PhpSpreadsheet\Helper\Html;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -9,7 +10,7 @@ use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Color;
-use User;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class Export
 {
@@ -72,24 +73,22 @@ class Export
             $fileName .= '.xlsx';
         }
 
-        header('Content-Encoding: UTF-8');
-        // Redirect output to a client’s web browser (Excel2007)
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8');
-        header('Content-Disposition: attachment;filename="' . $fileName . '"');
-        header('Content-Title: ' . $this->phpExcel->getActiveSheet()->getTitle());
-        header('Cache-Control: max-age=0');
-        // If you're serving to IE 9, then the following may be needed
-        header('Cache-Control: max-age=1');
+        $writer = IOFactory::createWriter($this->phpExcel, 'Xlsx');
+        $response =  new StreamedResponse(function () use ($writer) {
+                $writer->save('php://output');
+            }
+        );
 
+        $response->headers->set('Content-Encoding', 'UTF-8');
+        $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $fileName . '"');
+        $response->headers->set('Content-Title', $this->phpExcel->getActiveSheet()->getTitle());
         // If you're serving to IE over SSL, then the following may be needed
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-        header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-        header('Cache-control: private');
-        header('Pragma: public'); // HTTP/1.0
-        $objWriter = IOFactory::createWriter($this->phpExcel, 'Xlsx');
-        $objWriter->save('php://output');
-        $this->app->shutdown();
+        $response->setExpires(new \DateTime('1997-01-01'));  // Date in the past
+        $response->setLastModified(new \DateTime());  // always modified
+        $response->setCache(['max_age' => 0, 'private']);
+
+        return $response;
     }
 
     /**
