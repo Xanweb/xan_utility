@@ -20,6 +20,11 @@ class SendExceptionMailHandler extends MailHandler
     protected $reportEmail;
 
     /**
+     * @var \Concrete\Core\Config\Repository\Repository
+     */
+    protected $config;
+
+    /**
      * SendExceptionMailHandler constructor.
      *
      * @param string $reportMailAdr Email Address where to send Exceptions
@@ -28,6 +33,7 @@ class SendExceptionMailHandler extends MailHandler
     {
         parent::__construct(Logger::EMERGENCY, true);
         $this->setFormatter(new HtmlFormatter());
+        $this->config = Config::getFacadeRoot();
         $this->reportEmail = $reportMailAdr;
     }
 
@@ -62,17 +68,17 @@ class SendExceptionMailHandler extends MailHandler
      */
     protected function canSend()
     {
-        $hourStamp = (int) Config::get('concrete.xanweb.email_logging.hour_stamp', 0);
+        $hourStamp = $this->config->get('xanweb.email_logging.hour_stamp', 0);
         $diff = time() - $hourStamp;
         if ($diff > 3600) {
-            Config::save('concrete.xanweb.email_logging.hour_stamp', time());
-            Config::save('concrete.xanweb.email_logging.count', 1);
+            $this->config->save('xanweb.email_logging.hour_stamp', time());
+            $this->config->save('xanweb.email_logging.count', 1);
 
             return true;
         } else {
-            $sentLogCount = Config::get('concrete.xanweb.email_logging.count', 0);
+            $sentLogCount = $this->config->get('xanweb.email_logging.count', 0);
             if ($sentLogCount < static::MAX_EMAILS_PER_HOUR) {
-                Config::save('concrete.xanweb.email_logging.count', ++$sentLogCount);
+                $this->config->save('xanweb.email_logging.count', ++$sentLogCount);
 
                 return true;
             }
