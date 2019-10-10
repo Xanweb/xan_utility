@@ -7,7 +7,6 @@ use Concrete\Core\Block\BlockController as CoreBlockController;
 use Concrete\Core\Editor\LinkAbstractor;
 use Illuminate\Support\Collection;
 use Doctrine\DBAL\Types\Type;
-use Config;
 
 abstract class ItemListBlockController extends CoreBlockController
 {
@@ -54,10 +53,11 @@ abstract class ItemListBlockController extends CoreBlockController
      */
     protected function loadItems()
     {
-        $cache = \Core::make('cache/request');
+        $app = \Concrete\Core\Support\Facade\Application::getFacadeApplication();
+        $cache = $app->make('cache/expensive');
         $cacheItem = $cache->getItem(sprintf('block/%s/items', $this->bID));
 
-        if ($this->cacheBlockRecord() && !$cacheItem->isMiss() && Config::get('concrete.cache.blocks')) {
+        if ($this->cacheBlockRecord() && $this->btCachedBlockRecord && !$cacheItem->isMiss() && $app['config']->get('concrete.cache.blocks')) {
             $this->items = $cacheItem->get();
         } else {
             $db = \Database::connection();
@@ -65,7 +65,7 @@ abstract class ItemListBlockController extends CoreBlockController
             $qb->where($qb->expr()->eq('bID', ':bID'))->setParameter('bID', $this->bID);
             $this->items = Collection::make($qb->execute()->fetchAll());
 
-            if ($this->cacheBlockRecord() && Config::get('concrete.cache.blocks')) {
+            if ($this->cacheBlockRecord() && $app['config']->get('concrete.cache.blocks')) {
                 $cacheItem->setTTL($this->btCacheBlockOutputLifetime ?: (60 * 60 * 24 * 90)); // 3 months if no cache life time is defined
                 $cache->save($cacheItem->set($this->items));
             }
@@ -83,7 +83,7 @@ abstract class ItemListBlockController extends CoreBlockController
      */
     private function getItemListTableProps($prop = '')
     {
-        $cache = $this->app->make('cache/request');
+        $cache = $this->app->make('cache/expensive');
         if (empty($this->itemListTableFields)) {
             $item = $cache->getItem(sprintf('block/%s/2nd-table-cols', $this->btHandle));
             if (!$item->isMiss()) {
@@ -183,7 +183,7 @@ abstract class ItemListBlockController extends CoreBlockController
             ->where($qb->expr()->eq('bID', ':bID'))
             ->setParameter('bID', $this->bID)->execute();
 
-        $cache = $this->app->make('cache/request');
+        $cache = $this->app->make('cache/expensive');
         $cache->delete(sprintf('block/%s/items', $this->bID));
 
         unset($this->items);
@@ -207,7 +207,6 @@ abstract class ItemListBlockController extends CoreBlockController
         }
 
         $insertFields = $this->getItemListTableProps('QUERY_PLACE_HOLDER');
-
         $this->db->transactional(function (Connection $db) use ($sanitizedData, $insertFields) {
             $qb = $db->createQueryBuilder()
                 ->insert($this->getItemListTable())
@@ -234,7 +233,7 @@ abstract class ItemListBlockController extends CoreBlockController
     }
 
     /**
-     * Check if the item is valid
+     * Check if the item is valid.
      *
      * @param int $itemNbr
      * @param array $item
@@ -364,6 +363,6 @@ abstract class ItemListBlockController extends CoreBlockController
     public function setApplication(Application $app)
     {
         parent::setApplication($app);
-        $this->db = $app['database']->connection();
+        $this->db = $app['database/connection'];
     }
 }
