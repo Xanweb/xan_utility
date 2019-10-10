@@ -9,6 +9,11 @@ class Runner extends C5Runner
 {
     protected static $started = false;
 
+    /**
+     * Boot Up Utility Services.
+     *
+     * @throws
+     */
     public static function boot()
     {
         if (static::$started) {
@@ -23,7 +28,9 @@ class Runner extends C5Runner
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
+     *
+     * @see C5Runner::getServiceProviders()
      */
     protected static function getServiceProviders()
     {
@@ -35,10 +42,24 @@ class Runner extends C5Runner
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
+     *
+     * @see C5Runner::getRoutesClasses()
      */
     protected static function getRoutesClasses()
     {
         return ['XanUtility\Route\RouteList'];
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see C5Runner::getClassAliases()
+     */
+    protected static function getClassAliases()
+    {
+        return [
+            'MultilingualSection' => 'Concrete\Core\Multilingual\Page\Section\Section',
+        ];
     }
 }

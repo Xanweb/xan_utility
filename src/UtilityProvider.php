@@ -3,7 +3,6 @@ namespace XanUtility;
 
 use Concrete\Core\User\User;
 use Concrete\Core\Application\Application;
-use Concrete\Core\Foundation\ClassAliasList;
 use Concrete\Core\Foundation\Service\Provider as ServiceProvider;
 use XanUtility\Console\Command\TranslatePackageExceptCoreTranslationsCommand;
 use XanUtility\Editor\CkEditor\Editor;
@@ -15,11 +14,6 @@ class UtilityProvider extends ServiceProvider
         if (!$this->app->bound(User::class)) {
             $this->app->singleton(User::class);
         }
-
-        $classAliasList = ClassAliasList::getInstance();
-        $classAliasList->registerMultiple([
-            'MultilingualSection' => 'Concrete\Core\Multilingual\Page\Section\Section',
-        ]);
 
         $aliases = [
             'user/current' => User::class,
@@ -36,6 +30,8 @@ class UtilityProvider extends ServiceProvider
         $this->app->bind('site/active', function (Application $app) {
             return $app->make('site')->getSite();
         });
+
+        $this->app->singleton(['XanUtility\Html\Image' => 'xan/html/image']);
 
         $app = $this->app;
         $this->app['director']->addListener('on_before_console_run', function () use ($app) {
