@@ -36,7 +36,7 @@ trait BlockControllerTrait
         $args = [];
         $inspector = $this->app->make('import/value_inspector');
         if (isset($blockNode->data)) {
-            $db = $this->app->make('database/connection'); /* @var \Concrete\Core\Database\Connection\Connection $db */
+            $db = $this->app->make('database/connection');
             $schManager = $db->getSchemaManager();
             foreach ($blockNode->data as $data) {
                 $table = $this->getDBTableMapping((string) $data['table']);

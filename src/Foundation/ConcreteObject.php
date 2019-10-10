@@ -28,12 +28,11 @@ abstract class ConcreteObject extends CoreObject implements \JsonSerializable
 
     public function jsonSerialize()
     {
-        $dh = c5app('date');
         $this->jsonObj = new \stdClass();
         $array = get_object_vars($this);
         foreach ($array as $key => $v) {
             if ($v && ($v instanceof \DateTime)) {
-                $this->jsonObj->{$key} = $dh->formatCustom('d.m.Y', $v);
+                $this->jsonObj->{$key} = c5_date_format($v);
             } elseif (is_object($v)) {
                 $this->jsonSerializeRelatedObj($key, $v);
             } else {
