@@ -238,6 +238,7 @@ abstract class ItemListBlockController extends CoreBlockController
      * @param int $itemNbr
      * @param array $item
      * @param \Concrete\Core\Error\ErrorList\ErrorList $e
+     *
      * @return bool
      */
     protected function validateItem($itemNbr, $item, $e)

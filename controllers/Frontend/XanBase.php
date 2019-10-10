@@ -17,7 +17,7 @@ class XanBase extends Controller
             'i18n' => [
                 'confirm' => t('Are you sure?'),
                 'maxItemsExceeded' => t('Max items exceeded, You can not add any more items.'),
-                'pageNotFound' => t('Page not found')
+                'pageNotFound' => t('Page not found'),
             ],
             'editor' => [
                 'initCompactEditor' => '###initCompactEditor###',

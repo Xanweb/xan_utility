@@ -104,6 +104,7 @@ class FileInfo extends Controller
     private function getAllowedFileProperties()
     {
         $urlResolver = $this->app->make(ResolverManagerInterface::class);
+
         return [
             'title' => 'getTitle',
             'description' => 'getDescription',

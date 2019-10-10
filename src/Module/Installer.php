@@ -509,7 +509,7 @@ class Installer
     }
 
     /**
-     * Associate Attribute Keys To Set
+     * Associate Attribute Keys To Set.
      *
      * @param \Concrete\Core\Entity\Attribute\Key\Key[] $aks Array of attribute keys
      * @param \Concrete\Core\Entity\Attribute\Set|string $akSetHandleOrObj AttributeSet handle or object
@@ -518,9 +518,9 @@ class Installer
      */
     public function associateAttributeKeysToSet(array $aks, $akSetHandleOrObj)
     {
-        if(is_string($akSetHandleOrObj)) {
+        if (is_string($akSetHandleOrObj)) {
             $akSetObj = $this->app()->make(SetFactory::class)->getByHandle($akSetHandleOrObj);
-            if(!is_object($akSetObj)) {
+            if (!is_object($akSetObj)) {
                 throw new \Exception(__METHOD__ . ': ' . t('The Attribute Set "%s" is not installed.', $akSetHandleOrObj));
             }
         } else {

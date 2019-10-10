@@ -74,9 +74,9 @@ class Export
         }
 
         $writer = IOFactory::createWriter($this->phpExcel, 'Xlsx');
-        $response =  new StreamedResponse(function () use ($writer) {
-                $writer->save('php://output');
-            }
+        $response = new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }
         );
 
         $response->headers->set('Content-Encoding', 'UTF-8');

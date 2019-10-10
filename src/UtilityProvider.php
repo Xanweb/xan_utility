@@ -18,7 +18,7 @@ class UtilityProvider extends ServiceProvider
 
         $classAliasList = ClassAliasList::getInstance();
         $classAliasList->registerMultiple([
-            'MultilingualSection' => 'Concrete\Core\Multilingual\Page\Section\Section'
+            'MultilingualSection' => 'Concrete\Core\Multilingual\Page\Section\Section',
         ]);
 
         $aliases = [

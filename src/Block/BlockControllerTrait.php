@@ -13,12 +13,13 @@ trait BlockControllerTrait
     protected $uniqID;
 
     /**
-     * Get Uniq Identifier for Block
+     * Get Uniq Identifier for Block.
+     *
      * @return string
      */
     public function getUniqueId()
     {
-        if(!$this->uniqID) {
+        if (!$this->uniqID) {
             $prefix = strtolower($this->getIdentifier());
             $b = $this->getBlockObject();
             if (is_object($b) && $b->getProxyBlock()) {

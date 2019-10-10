@@ -56,21 +56,21 @@ EOT
             )
             ;
     }
-    
+
     /**
      * @var \Concrete\Core\Application\Application
      */
     protected $app;
-    
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->app = Application::getFacadeApplication();
-        
+
         $vsh = $this->app->make('helper/validation/strings');
         /* @var \Concrete\Core\Utility\Service\Validation\Strings $vsh */
         $fh = $this->app->make('helper/file');
         /* @var \Concrete\Core\File\Service\File $fh */
-        
+
         // Let's determine the package handle, directory and version
         $packageHandle = null;
         $packageDirectory = null;
@@ -101,7 +101,7 @@ EOT
             }
         }
         $packageLanguagesDirectory = $packageDirectory . '/' . DIRNAME_LANGUAGES;
-        
+
         // Determine the locales to translate
         $locales = [];
         $localeOption = $input->getOption('locale');
@@ -140,14 +140,14 @@ EOT
 
         $includeAppFolder = $input->getOption('include-application');
         $exclude3rdParty = $input->getOption('exclude-3rdparty');
-        
+
         // Initialize the master translations file (.pot)
         $pot = new Translations();
         $pot->setHeader('Project-Id-Version', "$packageHandle $packageVersion");
         $pot->setLanguage(Localization::BASE_LOCALE);
         $pot->setHeader('Report-Msgid-Bugs-To', $input->getOption('contact'));
         $pot->setHeader('Last-Translator', $input->getOption('translator'));
-        
+
         // Parse the package directory
         $output->writeln('Parsing package contents');
         foreach (\C5TL\Parser::getAllParsers() as $parser) {
@@ -172,7 +172,7 @@ EOT
                 $output->writeln('<info>done.</info>');
             }
         }
-        
+
         // Save the pot file
         $output->write('Saving .pot file... ');
         if (!is_dir($packageLanguagesDirectory)) {
@@ -186,7 +186,7 @@ EOT
             throw new Exception("Unable to save the .pot file to $potFilename");
         }
         $output->writeln('<info>done.</info>');
-        
+
         $remoteTranslationsProvider = $this->app->make(RemoteTranslationProvider::class);
         /* @var RemoteTranslationProvider $remoteTranslationsProvider */
         // Creating/updating the locale files
@@ -200,13 +200,13 @@ EOT
             if (!file_exists(DIR_LANGUAGES . "/$locale/LC_MESSAGES/messages.mo")) {
                 $output->writeln("-- No Core Translations found on locale $locale, please install it from dashboard to avoid duplicate translations.");
             } else {
-                $output->writeln("-- Remove already translated strings by Core");
+                $output->writeln('-- Remove already translated strings by Core');
                 $coreTranslations = Translations::fromMoFile(DIR_LANGUAGES . "/$locale/LC_MESSAGES/messages.mo");
                 $removedMessages = 0;
                 foreach ($po as $entry) {
                     if ($coreTranslations->find($entry)) {
                         $po->offsetUnset($entry->getId());
-                        $removedMessages++;
+                        ++$removedMessages;
                     }
                 }
 
@@ -250,7 +250,7 @@ EOT
             $output->writeln('<info>done.</info>');
         }
     }
-    
+
     private function guessPackageDetails($packageDirectory)
     {
         $packageHandle = null;
@@ -279,7 +279,7 @@ EOT
                                         break;
                                 }
                             }
-                            
+
                             return $keep;
                         }
                         )
@@ -292,20 +292,20 @@ EOT
                         && is_string($tokens[$i + 1]) && $tokens[$i + 1] === '='
                         && is_array($tokens[$i + 2]) && $tokens[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING
                         ) {
-                            $packageHandle = @eval('return ' . $tokens[$i + 2][1] . ';');
-                        }
-                        if (
+                        $packageHandle = @eval('return ' . $tokens[$i + 2][1] . ';');
+                    }
+                    if (
                             $packageVersion === null
                             && is_array($tokens[$i + 0]) && $tokens[$i + 0][0] === T_VARIABLE && $tokens[$i + 0][1] === '$pkgVersion'
                             && is_string($tokens[$i + 1]) && $tokens[$i + 1] === '='
                             && is_array($tokens[$i + 2]) && $tokens[$i + 2][0] === T_CONSTANT_ENCAPSED_STRING
                             ) {
-                                $packageVersion = @eval('return ' . $tokens[$i + 2][1] . ';');
-                            }
+                        $packageVersion = @eval('return ' . $tokens[$i + 2][1] . ';');
+                    }
                 }
             }
         }
-        
+
         return [$packageHandle, $packageVersion];
     }
 }

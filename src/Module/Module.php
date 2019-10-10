@@ -1,7 +1,6 @@
 <?php
 namespace XanUtility\Module;
 
-
 interface Module
 {
     /**
@@ -26,7 +25,7 @@ interface Module
     public static function config();
 
     /**
-     * Basic Boot for Module
+     * Basic Boot for Module.
      */
     public static function boot();
 }

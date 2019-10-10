@@ -10,11 +10,11 @@ abstract class C5Runner
     use StaticApplicationTrait;
 
     /**
-     * Class to be used Statically
+     * Class to be used Statically.
      */
     private function __construct()
     {
-         return false;
+        return false;
     }
 
     public static function boot()
@@ -34,7 +34,7 @@ abstract class C5Runner
         $routeListClasses = static::getRoutesClasses();
         if (is_array($routeListClasses) && !empty($routeListClasses)) {
             foreach ($routeListClasses as $routeListClass) {
-                if(is_subclass_of($routeListClass, RouteListInterface::class)) {
+                if (is_subclass_of($routeListClass, RouteListInterface::class)) {
                     $app->call("$routeListClass@loadRoutes");
                 } else {
                     throw new \Exception(t(get_called_class() . ':getRoutesClass: RoutesClass should be instanceof \Concrete\Core\Routing\RouteListInterface'));
@@ -44,7 +44,8 @@ abstract class C5Runner
     }
 
     /**
-     * Classes to be registered as aliases in \Concrete\Core\Foundation\ClassAliasList
+     * Classes to be registered as aliases in \Concrete\Core\Foundation\ClassAliasList.
+     *
      * @return array
      */
     protected static function getClassAliases()
@@ -53,7 +54,8 @@ abstract class C5Runner
     }
 
     /**
-     * Get Service Providers Class Names
+     * Get Service Providers Class Names.
+     *
      * @return array
      */
     protected static function getServiceProviders()
@@ -62,7 +64,8 @@ abstract class C5Runner
     }
 
     /**
-     * Get Class name for RouteList, must be instance of \Concrete\Core\Routing\RouteListInterface
+     * Get Class name for RouteList, must be instance of \Concrete\Core\Routing\RouteListInterface.
+     *
      * @return array
      */
     protected static function getRoutesClasses()

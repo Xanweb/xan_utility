@@ -6,7 +6,7 @@ use Concrete\Core\Application\Application;
 class DefaultPagePathMapper implements PagePathMapperInterface
 {
     /**
-     * @var array ["lang" => $siteTreeObject]
+     * @var array ["lang" =>]
      */
     private $siteTrees = [];
 
@@ -22,15 +22,15 @@ class DefaultPagePathMapper implements PagePathMapperInterface
             $this->siteTrees[$locale->getLanguage()] = $locale->getSiteTreeObject();
         }
 
-        $this->defaultLanguage = $site->getDefaultLocale()->getLanguage();;
+        $this->defaultLanguage = $site->getDefaultLocale()->getLanguage();
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function getMappedPath($path)
     {
-        if(count($this->siteTrees) === 1) {
+        if (count($this->siteTrees) === 1) {
             return [$path, head($this->siteTrees)];
         }
 
@@ -38,7 +38,7 @@ class DefaultPagePathMapper implements PagePathMapperInterface
         $extractedPath = explode('/', trim($path, '/'));
         $lang = $extractedPath[0];
 
-        if($lang == $this->defaultLanguage) {
+        if ($lang == $this->defaultLanguage) {
             // Remove /lang part
             $mappedPath = '/' . implode('/', array_slice($extractedPath, 1));
         }
