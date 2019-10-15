@@ -84,7 +84,8 @@ class Export
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8');
         $response->headers->set('Content-Disposition', 'attachment;filename="' . $fileName . '"');
         $response->headers->set('Content-Title', $this->phpExcel->getActiveSheet()->getTitle());
-        $response->headers->set('Cache-Control', 'no-cache');
+        $response->headers->addCacheControlDirective('no-cache');
+        $response->headers->addCacheControlDirective('no-store');
         // If you're serving to IE over SSL, then the following may be needed
         $response->setExpires(new \DateTime('1997-01-01'));  // Date in the past
         $response->setLastModified(new \DateTime());  // always modified
