@@ -67,8 +67,7 @@ class Export
      */
     public function download($fileName)
     {
-        ob_end_clean();
-        set_time_limit(0);
+        @set_time_limit(0);
         $this->setFileProperties();
 
         if (!ends_with($fileName, '.xlsx')) {
