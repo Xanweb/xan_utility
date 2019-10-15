@@ -60,6 +60,8 @@ class Export
      *
      * @param $fileName
      *
+     * @return StreamedResponse
+     *
      * @throws \PhpOffice\PhpSpreadsheet\Exception
      * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
      */
@@ -76,17 +78,17 @@ class Export
         $writer = IOFactory::createWriter($this->phpExcel, 'Xlsx');
         $response = new StreamedResponse(function () use ($writer) {
             $writer->save('php://output');
-        }
-        );
+        });
 
         $response->headers->set('Content-Encoding', 'UTF-8');
         $response->headers->set('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8');
         $response->headers->set('Content-Disposition', 'attachment;filename="' . $fileName . '"');
         $response->headers->set('Content-Title', $this->phpExcel->getActiveSheet()->getTitle());
+        $response->headers->set('Cache-Control', 'no-cache');
         // If you're serving to IE over SSL, then the following may be needed
         $response->setExpires(new \DateTime('1997-01-01'));  // Date in the past
         $response->setLastModified(new \DateTime());  // always modified
-        $response->setCache(['max_age' => 0, 'private']);
+        $response->setPrivate();
 
         return $response;
     }
