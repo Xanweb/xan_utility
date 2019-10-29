@@ -391,7 +391,7 @@ class Installer
                 }
 
                 if (isset($data['settings']['akIsSearchable'])) {
-                    $key->setIsAttributeKeyInternal((bool) $data['settings']['akIsSearchable']);
+                    $key->setIsAttributeKeySearchable((bool) $data['settings']['akIsSearchable']);
                 }
 
                 $akSettings = $type->getController()->saveKey($data['settings']);
