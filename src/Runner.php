@@ -4,6 +4,7 @@ namespace XanUtility;
 use XanUtility\Application\C5Runner;
 use XanUtility\Form\FormServiceProvider;
 use XanUtility\Migration\ServiceProvider as MigrationServiceProvider;
+use XanUtility\PageList\Provider as PageListServiceProvider;
 
 class Runner extends C5Runner
 {
@@ -37,6 +38,7 @@ class Runner extends C5Runner
         return [
             UtilityProvider::class,
             FormServiceProvider::class,
+            PageListServiceProvider::class,
             MigrationServiceProvider::class,
         ];
     }
