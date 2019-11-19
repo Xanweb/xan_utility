@@ -152,7 +152,7 @@
                     });
 
                     $bFormContainer.find('ul.nav-tabs.nav > li').on('classChange', function (e) {
-                        if (this.$element.is(':visible')) {
+                        if (my.$element.is(':visible')) {
                             my.enableFloatingActionsBar();
                         } else {
                             my.disableFloatingActionsBar();
