@@ -27,8 +27,12 @@
 
       .panel-heading {
         width: 100%;
-        padding: 10px 0;
+        padding: 10px 0 4px;
         cursor: pointer;
+
+        label {
+          padding-top: 3px;
+        }
 
         .drag-handle {
           cursor: move !important;

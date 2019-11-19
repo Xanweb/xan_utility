@@ -18,6 +18,7 @@
         my.setupItemHeaderAction();
         my.setupDeleteItemAction();
         my.setupAddItemAction();
+        my.setupFloatingActionsBar();
 
         // Setup Items Sort
         my.$container.sortable({
@@ -126,9 +127,49 @@
                     }, 'slow');
                 }
             });
-            if(my.$element.find('.floating-block-actions').length > 0) {
-                my.$element.find('.floating-block-actions').appendTo(my.$element.closest('.ui-dialog.ui-widget'));
+        },
+        setupFloatingActionsBar: function () {
+            var my = this;
+            var $actionsBar = my.$element.find('.floating-block-actions');
+            if ($actionsBar.length > 0) {
+                $actionsBar.appendTo(my.$element.closest('.ui-dialog.ui-widget'));
+                this.enableFloatingActionsBar();
+
+                var $bFormContainer = $('#ccm-block-form');
+                if ($bFormContainer.find('ul.nav-tabs.nav').length > 0) {
+                    var observer = new MutationObserver(function(mutations) {
+                        mutations.forEach(function(mutation) {
+                            if (mutation.attributeName === "class") {
+                                $(mutation.target).trigger('classChange');
+                            }
+                        });
+                    });
+
+                    $bFormContainer.find('ul.nav-tabs.nav > li').each(function () {
+                        observer.observe(this, {
+                            attributes: true
+                        });
+                    });
+
+                    $bFormContainer.find('ul.nav-tabs.nav > li').on('classChange', function (e) {
+                        if (this.$element.is(':visible')) {
+                            my.enableFloatingActionsBar();
+                        } else {
+                            my.disableFloatingActionsBar();
+                        }
+                    });
+                }
             }
+        },
+        enableFloatingActionsBar: function () {
+            var my = this;
+            var $actionsBar = my.$element.closest('.ui-dialog.ui-widget').find('.floating-block-actions');
+            if ($actionsBar.length > 0) {
+                this.$element.closest('.ui-dialog-content.ui-widget-content').addClass('has-floating-block-actions');
+            }
+        },
+        disableFloatingActionsBar: function () {
+            this.$element.closest('.ui-dialog-content.ui-widget-content').removeClass('has-floating-block-actions');
         },
         setupChoiceToggler: function($item) {
             $item.find('[data-choice]').each(function(){

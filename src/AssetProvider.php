@@ -23,7 +23,7 @@ class AssetProvider
         ]);
 
         UtilityAssetList::registerMultipleCss([
-            ['xan/item-list', 'css/item-list.css', ['combine' => true]],
+            ['xan/item-list', 'css/item-list.css', ['minify' => false]],
         ]);
 
         UtilityAssetList::registerMultipleJavascript([
