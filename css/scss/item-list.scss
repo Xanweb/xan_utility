@@ -70,7 +70,7 @@
   }
 }
 
-.ui-dialog-content.ui-widget-content {
+.ui-dialog.ui-widget {
   div.floating-block-actions {
     display: none;
     width: 100%;
@@ -89,7 +89,10 @@
   }
 
   &.has-floating-block-actions {
-    margin-bottom: 70px;
+    .ui-dialog-content.ui-widget-content {
+      margin-bottom: 70px;
+    }
+
     div.floating-block-actions {
       display: block;
     }

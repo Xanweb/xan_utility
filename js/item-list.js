@@ -165,11 +165,11 @@
             var my = this;
             var $actionsBar = my.$element.closest('.ui-dialog.ui-widget').find('.floating-block-actions');
             if ($actionsBar.length > 0) {
-                this.$element.closest('.ui-dialog-content.ui-widget-content').addClass('has-floating-block-actions');
+                this.$element.closest('.ui-dialog.ui-widget').addClass('has-floating-block-actions');
             }
         },
         disableFloatingActionsBar: function () {
-            this.$element.closest('.ui-dialog-content.ui-widget-content').removeClass('has-floating-block-actions');
+            this.$element.closest('.ui-dialog.ui-widget').removeClass('has-floating-block-actions');
         },
         setupChoiceToggler: function($item) {
             $item.find('[data-choice]').each(function(){
