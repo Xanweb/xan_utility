@@ -1,4 +1,4 @@
-!function(global, $) {
+!function(global, $, xan) {
     'use strict';
 
     function XanItemList($element, options) {
@@ -6,9 +6,10 @@
         var my = this;
         options = options || {};
         my.options = $.extend({
-            i18n: ccm_xan.i18n,
+            i18n: xan.i18n,
             items: [],
-            maxItemsCount: 0
+            maxItemsCount: 0,
+            initContentEditors: xan.editor.initCompactEditor
         }, options);
 
         my.$element = $element.addClass('ccm-block-edit-container');
@@ -152,9 +153,12 @@
                     });
 
                     $bFormContainer.find('ul.nav-tabs.nav > li').on('classChange', function (e) {
+                        var $widgetContent = my.$element.closest('.ui-dialog-content.ui-widget-content');
                         if (my.$element.is(':visible')) {
+                            $widgetContent.css('padding-bottom', '');
                             my.enableFloatingActionsBar();
                         } else {
+                            $widgetContent.css('padding-bottom', $widgetContent.css('margin-bottom'));
                             my.disableFloatingActionsBar();
                         }
                     });
@@ -211,7 +215,8 @@
                         $(this).attr('id', _.uniqueId('editor'));
                     }
                 });
-                ccm_xan.editor.initCompactEditor($editors);
+
+                my.options.initContentEditors($editors);
             }
         },
         destroyRichTextEditors: function ($container) {
@@ -270,4 +275,4 @@
 
     */
 
-}(window, $);
+}(window, $, ccm_xan);
