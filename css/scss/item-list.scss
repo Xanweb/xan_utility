@@ -26,9 +26,12 @@
       }
 
       .panel-heading {
-        width: 100%;
-        padding: 10px 0 4px;
+        padding: 10px 15px 4px 15px;
+        margin-left: -15px;
+        margin-right: -15px;
         cursor: pointer;
+        background: #eee;
+        border-bottom: 1px solid #e3e3e3;
 
         label {
           padding-top: 3px;
@@ -50,12 +53,17 @@
       .panel-body {
         width: 100%;
         padding: 10px 0;
+
+        .form-group-sm {
+          margin-bottom: 15px;
+        }
       }
 
       .well {
         padding: 0 15px;
         margin-left: 0;
         margin-right: 0;
+        background: #fff;
       }
 
       .btn-delete-item {
