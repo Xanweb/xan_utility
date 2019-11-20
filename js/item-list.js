@@ -158,7 +158,7 @@
                             $widgetContent.css('padding-bottom', '');
                             my.enableFloatingActionsBar();
                         } else {
-                            $widgetContent.css('padding-bottom', '70px');
+                            $widgetContent.css('padding-bottom', '85px');
                             my.disableFloatingActionsBar();
                         }
                     });
