@@ -222,11 +222,12 @@
         destroyRichTextEditors: function ($container) {
             $container.find('.editor-content').each(function(){
                 var id = $(this).attr('id');
-                $(this).remove();
                 if(CKEDITOR.instances[id] !== undefined) {
-                    $("#cke_"+id).remove();
-                    CKEDITOR.instances[id].destroy(false);
+                    CKEDITOR.instances[id].destroy();
                 }
+
+                $(this).remove();
+                $("#cke_"+id).remove();
             });
         },
         detectCheckboxes: function($item) {
