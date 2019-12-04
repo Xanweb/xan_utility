@@ -2,6 +2,7 @@
 namespace XanUtility\Entity\Service;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Concrete\Core\Support\Facade\Application;
 
 abstract class EntityService implements ServiceInterface
 {
@@ -9,6 +10,11 @@ abstract class EntityService implements ServiceInterface
      * @var EntityManagerInterface
      */
     protected $entityManager;
+
+    /**
+     * @var \Doctrine\ORM\EntityRepository
+     */
+    private $repo;
 
     public function __construct(EntityManagerInterface $entityManager)
     {
@@ -22,7 +28,11 @@ abstract class EntityService implements ServiceInterface
      */
     protected function repo()
     {
-        return $this->entityManager->getRepository($this->getEntityClass());
+        if (!$this->repo) {
+            $this->repo = $this->entityManager->getRepository($this->getEntityClass());
+        }
+
+        return $this->repo;
     }
 
     /**
@@ -32,7 +42,8 @@ abstract class EntityService implements ServiceInterface
      */
     public function createEntity()
     {
-        return c5app()->make($this->getEntityClass());
+        $app = Application::getFacadeApplication();
+        return $app->make($this->getEntityClass());
     }
 
     /**
@@ -68,9 +79,25 @@ abstract class EntityService implements ServiceInterface
     /**
      * {@inheritdoc}
      *
-     * @see ServiceInterface::saveData()
+     * @see ServiceInterface::create()
      */
-    public function saveData($entity, array $data = [])
+    public function create(array $data = [])
+    {
+        $entity = $this->createEntity();
+        $entity->setPropertiesFromArray($data);
+
+        $this->entityManager->persist($entity);
+        $this->entityManager->flush();
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::update()
+     */
+    public function update($entity, array $data = [])
     {
         $entity->setPropertiesFromArray($data);
 
@@ -78,6 +105,18 @@ abstract class EntityService implements ServiceInterface
         $this->entityManager->flush();
 
         return true;
+    }
+
+    /**
+     * @deprecated
+     *
+     * {@inheritdoc}
+     *
+     * @see ServiceInterface::saveData()
+     */
+    public function saveData($entity, array $data = [])
+    {
+        return $this->update($entity, $data);
     }
 
     /**
@@ -90,6 +129,7 @@ abstract class EntityService implements ServiceInterface
         foreach ($entities as $entity) {
             $this->entityManager->persist($entity);
         }
+
         $this->entityManager->flush();
     }
 

@@ -43,6 +43,26 @@ interface ServiceInterface
     public function getByID($id);
 
     /**
+     * Create Entity.
+     *
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function create(array $data = []);
+
+    /**
+     * Update Entity.
+     *
+     * @param \XanUtility\Foundation\ConcreteObject $entity
+     * @param array $data
+     *
+     * @return bool
+     */
+    public function update($entity, array $data = []);
+
+    /**
+     * @deprecated use update()
      * Save Entity Data.
      *
      * @param \XanUtility\Foundation\ConcreteObject $entity
