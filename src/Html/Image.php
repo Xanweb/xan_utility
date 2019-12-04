@@ -6,8 +6,8 @@ use Concrete\Core\File\Image\Thumbnail\Type\Type as ThumbnailType;
 use Concrete\Core\Attribute\Category\FileCategory;
 use Concrete\Core\Html\Object\Picture;
 use Concrete\Core\Entity\File\File;
-use Concrete\Core\Page\Theme\Theme;
 use Concrete\Core\Page\Page;
+use PageTheme;
 
 class Image
 {
@@ -37,19 +37,21 @@ class Image
     /**
      * Display Responsive Picture.
      *
-     * @param $img
+     * @param File $img
+     * @param string $fallbackImagePath
      */
-    public function renderPicture($img)
+    public function renderPicture($img, $fallbackImagePath = null)
     {
-        echo $this->getPicture($img);
+        echo $this->getPicture($img, $fallbackImagePath);
     }
 
     /**
      * @param File $img
+     * @param string $fallbackImagePath
      *
      * @return Picture
      */
-    public function getPicture($img)
+    public function getPicture($img, $fallbackImagePath = null)
     {
         $sources = [];
         $altText = '';
@@ -84,7 +86,65 @@ class Image
             }
         }
 
-        $picture = Picture::create($sources, !empty($baseImageUrl) ? $baseImageUrl : $this->defaultFallbackImage);
+        $picture = Picture::create($sources, !empty($baseImageUrl) ? $baseImageUrl : ($fallbackImagePath ?: $this->defaultFallbackImage));
+        $picture->alt($altText);
+
+        return $picture;
+    }
+
+    /**
+     * Display Responsive Picture from configured theme thumbnails.
+     *
+     * @param File $img
+     * @param string $fallbackImagePath
+     */
+    public function renderThumbnailsPicture($img, $fallbackImagePath = null)
+    {
+        echo $this->getThumbnailsPicture($img, $fallbackImagePath);
+    }
+
+    /**
+     * @param File $img
+     * @param string $fallbackImagePath
+     *
+     * @return Picture
+     */
+    public function getThumbnailsPicture($img, $fallbackImagePath = null)
+    {
+        $sources = [];
+        $altText = '';
+        $baseImageUrl = '';
+        if (is_object($img)) {
+            $fv = $img->getApprovedVersion();
+            $altText = $this->getAltText($fv);
+
+            $baseImageUrl = $fv->getRelativePath();
+            if (!$baseImageUrl) {
+                $baseImageUrl = $fv->getURL();
+            }
+
+            if (is_object($this->theme) && method_exists($this->theme, 'getThemeResponsiveImageThumbnailsMap')) {
+                foreach ($this->theme->getThemeResponsiveImageThumbnailsMap() as $thumbnail => $width) {
+                    $type = ThumbnailType::getByHandle($thumbnail);
+                    if ($type != null) {
+                        $imageUrl = $fv->getThumbnailURL($type->getBaseVersion());
+                        $imageUrl_2x = $fv->getThumbnailURL($type->getDoubledVersion());
+                        if (!file_exists(absolute_path($imageUrl))) {
+                            $imageUrl = $baseImageUrl;
+                        }
+
+                        $src = $imageUrl;
+                        if (!empty($imageUrl_2x) && file_exists(absolute_path($imageUrl_2x))) {
+                            $src = "$imageUrl_2x 2x, $imageUrl 1x";
+                        }
+
+                        $sources[] = ['src' => $src, 'width' => $width];
+                    }
+                }
+            }
+        }
+
+        $picture = Picture::create($sources, !empty($baseImageUrl) ? $baseImageUrl : ($fallbackImagePath ?: $this->defaultFallbackImage));
         $picture->alt($altText);
 
         return $picture;
@@ -229,11 +289,11 @@ class Image
                 $pt = $pt->getThemeHandle();
             }
 
-            $th = Theme::getByHandle($pt);
+            $th = PageTheme::getByHandle($pt);
             if (is_object($th)) {
                 $this->theme = $th;
             } else {
-                $this->theme = Theme::getSiteTheme();
+                $this->theme = PageTheme::getSiteTheme();
             }
         }
     }
