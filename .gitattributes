@@ -1,0 +1,7 @@
+* text=auto
+
+/css/*.css linguist-vendored
+/js/*.min.js linguist-vendored
+/css/scss/ export-ignore
+/.* export-ignore
+/README.md export-ignore
