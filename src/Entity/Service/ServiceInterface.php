@@ -47,7 +47,7 @@ interface ServiceInterface
      *
      * @param array $data
      *
-     * @return bool
+     * @return \XanUtility\Foundation\ConcreteObject
      */
     public function create(array $data = []);
 

@@ -89,7 +89,7 @@ abstract class EntityService implements ServiceInterface
         $this->entityManager->persist($entity);
         $this->entityManager->flush();
 
-        return true;
+        return $entity;
     }
 
     /**
