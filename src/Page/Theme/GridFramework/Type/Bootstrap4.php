@@ -38,18 +38,18 @@ class Bootstrap4 extends GridFramework
     public function getPageThemeGridFrameworkColumnClasses()
     {
         return [
-            'col-12 col-md-1',
-            'col-12 col-md-2',
-            'col-12 col-md-3',
-            'col-12 col-md-4',
-            'col-12 col-md-5',
-            'col-12 col-md-6',
-            'col-12 col-md-7',
-            'col-12 col-md-8',
-            'col-12 col-md-9',
-            'col-12 col-md-10',
-            'col-12 col-md-11',
-            'col-12 col-md-12',
+            'col-md-1',
+            'col-md-2',
+            'col-md-3',
+            'col-md-4',
+            'col-md-5',
+            'col-md-6',
+            'col-md-7',
+            'col-md-8',
+            'col-md-9',
+            'col-md-10',
+            'col-md-11',
+            'col-md-12',
         ];
     }
 
