@@ -2,6 +2,7 @@
 namespace XanUtility\Filesystem\FileLocator;
 
 use Concrete\Core\Filesystem\FileLocator\AbstractLocation;
+use Symfony\Component\Routing\Generator\UrlGenerator;
 
 class LibraryLocator extends AbstractLocation
 {
@@ -32,8 +33,6 @@ class LibraryLocator extends AbstractLocation
 
     public function getURL()
     {
-        $relativePath = str_replace(DIR_BASE, '', $this->baseDir);
-
-        return DIR_REL . '/' . ltrim($relativePath, '/');
+        return '/' . ltrim(UrlGenerator::getRelativePath(DIR_BASE . '/', $this->getPath()), '/');
     }
 }
